@@ -36,7 +36,7 @@ public final class CreateAccountProcess implements Process<CreateAccountInput, A
         .createdBy(executor)
         .updatedBy(executor)
         .build();
-    var result = this.accountRepository.upsert(account);
+    var result = this.accountRepository.create(account);
     return ProcessResult.success(result);
   }
 }

@@ -43,7 +43,7 @@ public final class CreateAccountProcessTest {
     final var input = new ProcessInput<>(createRequest, context);
 
     when(context.requester()).thenReturn(requester);
-    when(accountRepository.upsert(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    when(accountRepository.create(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
     // When
     final var result = underTest.process(input);
@@ -59,7 +59,7 @@ public final class CreateAccountProcessTest {
     assertEquals(createRequest.themeColor(), data.getThemeColor());
     assertEquals(BigDecimal.ZERO, data.getBalance());
 
-    verify(accountRepository).upsert(argThat(saved -> {
+    verify(accountRepository).create(argThat(saved -> {
       return createRequest.name().equals(saved.getName())
           && createRequest.type().equals(saved.getType().name())
           && createRequest.themeColor().equals(saved.getThemeColor())
