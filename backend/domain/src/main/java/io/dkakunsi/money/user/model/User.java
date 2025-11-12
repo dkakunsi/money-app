@@ -1,4 +1,4 @@
-package io.dkakunsi.money.account.model;
+package io.dkakunsi.money.user.model;
 
 import io.dkakunsi.common.Id;
 import lombok.Builder;

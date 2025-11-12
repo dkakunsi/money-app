@@ -9,8 +9,8 @@ import io.dkakunsi.common.process.ProcessError;
 import io.dkakunsi.common.process.ProcessInput;
 import io.dkakunsi.common.process.ProcessResult;
 import io.dkakunsi.money.account.model.Account;
-import io.dkakunsi.money.account.model.User;
 import io.dkakunsi.money.account.port.AccountPort;
+import io.dkakunsi.money.user.model.User;
 
 public final class CreateAccountProcess implements Process<CreateAccountInput, Account> {
 
