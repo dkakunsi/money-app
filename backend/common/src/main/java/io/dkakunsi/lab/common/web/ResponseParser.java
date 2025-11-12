@@ -1,6 +1,6 @@
-package io.dkakunsi.common.web;
+package io.dkakunsi.lab.common.web;
 
-import io.dkakunsi.common.process.ProcessResult;
+import io.dkakunsi.lab.common.process.ProcessResult;
 
 @FunctionalInterface
 public interface ResponseParser<T> {

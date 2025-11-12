@@ -2,7 +2,7 @@ package io.dkakunsi.money.user.model;
 
 import java.util.Objects;
 
-import io.dkakunsi.common.Id;
+import io.dkakunsi.lab.common.Id;
 import io.dkakunsi.money.user.process.RegisterUserInput;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,9 +1,9 @@
 package io.dkakunsi.money.user.process;
 
-import io.dkakunsi.common.process.Process;
-import io.dkakunsi.common.process.ProcessError;
-import io.dkakunsi.common.process.ProcessInput;
-import io.dkakunsi.common.process.ProcessResult;
+import io.dkakunsi.lab.common.process.Process;
+import io.dkakunsi.lab.common.process.ProcessError;
+import io.dkakunsi.lab.common.process.ProcessInput;
+import io.dkakunsi.lab.common.process.ProcessResult;
 import io.dkakunsi.money.user.model.User;
 import io.dkakunsi.money.user.port.UserPort;
 

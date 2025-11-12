@@ -1,4 +1,4 @@
-package io.dkakunsi.common;
+package io.dkakunsi.lab.common;
 
 import java.util.UUID;
 

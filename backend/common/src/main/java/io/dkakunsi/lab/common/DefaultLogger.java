@@ -1,4 +1,4 @@
-package io.dkakunsi.common;
+package io.dkakunsi.lab.common;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;

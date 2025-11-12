@@ -1,10 +1,9 @@
-package io.dkakunsi.javalin;
+package io.dkakunsi.lab.javalin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -15,22 +14,22 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.dkakunsi.common.Context;
-import io.dkakunsi.common.process.ProcessError;
-import io.dkakunsi.common.process.ProcessInput;
-import io.dkakunsi.common.process.ProcessResult;
-import io.dkakunsi.common.security.AuthorizedPrincipal;
-import io.dkakunsi.common.security.Authorizer;
-import io.dkakunsi.common.web.Endpoint.Method;
-import io.dkakunsi.javalin.object.TestObject;
-import io.dkakunsi.javalin.object.TestObjectInput;
+import io.dkakunsi.lab.common.Context;
+import io.dkakunsi.lab.common.process.ProcessError;
+import io.dkakunsi.lab.common.process.ProcessInput;
+import io.dkakunsi.lab.common.process.ProcessResult;
+import io.dkakunsi.lab.common.security.AuthorizedPrincipal;
+import io.dkakunsi.lab.common.security.Authorizer;
+import io.dkakunsi.lab.common.web.Endpoint.Method;
+import io.dkakunsi.lab.javalin.object.TestObject;
+import io.dkakunsi.lab.javalin.object.TestObjectInput;
 import kong.unirest.Unirest;
 
 class JavalinWebTest {
 
   private static final String BASE_URL = "http://localhost:20000";
 
-  private static io.dkakunsi.common.process.Process<TestObjectInput, TestObject> process;
+  private static io.dkakunsi.lab.common.process.Process<TestObjectInput, TestObject> process;
 
   private static JavalinServer server;
 
@@ -58,8 +57,8 @@ class JavalinWebTest {
   @SuppressWarnings("unchecked")
   @BeforeAll
   static void setup() throws Exception {
-    process = (io.dkakunsi.common.process.Process<TestObjectInput, TestObject>) mock(
-        io.dkakunsi.common.process.Process.class);
+    process = (io.dkakunsi.lab.common.process.Process<TestObjectInput, TestObject>) mock(
+        io.dkakunsi.lab.common.process.Process.class);
     authorizer = mock(Authorizer.class);
     var postEndpoint = JavalinEndpoint.<TestObjectInput, TestObject>builder()
         .process(process)
@@ -176,7 +175,7 @@ class JavalinWebTest {
         .name("name")
         .build()));
     when(process.process(any(ProcessInput.class))).thenReturn(output);
-    when(authorizer.verify(anyString())).thenReturn(new AuthorizedPrincipal("Requester"));
+    when(authorizer.verify("JWT_Token")).thenReturn(new AuthorizedPrincipal("Requester"));
 
     // When
     var response = Unirest.put(BASE_URL + "/test/id")
@@ -208,11 +207,11 @@ class JavalinWebTest {
         .name("name")
         .build()));
     when(process.process(any(ProcessInput.class))).thenReturn(output);
-    when(authorizer.verify(anyString())).thenThrow(new IllegalArgumentException());
+    when(authorizer.verify("JWT_Token2")).thenThrow(new IllegalArgumentException());
 
     // When
     var response = Unirest.put(BASE_URL + "/test/id")
-        .header("Authorization", "JWT_Token")
+        .header("Authorization", "JWT_Token2")
         .body(body)
         .asString();
 

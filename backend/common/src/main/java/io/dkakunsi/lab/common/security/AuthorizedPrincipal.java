@@ -1,4 +1,4 @@
-package io.dkakunsi.common.security;
+package io.dkakunsi.lab.common.security;
 
 import jakarta.validation.constraints.NotBlank;
 

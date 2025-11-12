@@ -3,7 +3,7 @@ package io.dkakunsi.money.account.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import io.dkakunsi.common.Id;
+import io.dkakunsi.lab.common.Id;
 import io.dkakunsi.money.user.model.User;
 import lombok.Builder;
 import lombok.Getter;

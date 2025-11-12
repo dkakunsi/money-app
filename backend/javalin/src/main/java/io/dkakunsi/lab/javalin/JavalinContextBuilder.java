@@ -1,7 +1,7 @@
-package io.dkakunsi.javalin;
+package io.dkakunsi.lab.javalin;
 
-import io.dkakunsi.common.security.AuthorizedPrincipal;
-import io.dkakunsi.common.web.Endpoint.Header;
+import io.dkakunsi.lab.common.security.AuthorizedPrincipal;
+import io.dkakunsi.lab.common.web.Endpoint.Header;
 import lombok.Builder;
 
 @Builder
@@ -15,8 +15,8 @@ public final class JavalinContextBuilder {
     return headerValue != null ? headerValue : "";
   }
 
-  public io.dkakunsi.common.Context build() {
-    return io.dkakunsi.common.Context.builder()
+  public io.dkakunsi.lab.common.Context build() {
+    return io.dkakunsi.lab.common.Context.builder()
         .requester(requester != null ? requester.email() : null)
         .requestId(fromHeader(context, Header.REQUEST_ID))
         .authorizationToken(fromHeader(context, Header.AUTH))

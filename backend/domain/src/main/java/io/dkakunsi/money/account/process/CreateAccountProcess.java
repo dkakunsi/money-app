@@ -3,11 +3,11 @@ package io.dkakunsi.money.account.process;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import io.dkakunsi.common.Id;
-import io.dkakunsi.common.process.Process;
-import io.dkakunsi.common.process.ProcessError;
-import io.dkakunsi.common.process.ProcessInput;
-import io.dkakunsi.common.process.ProcessResult;
+import io.dkakunsi.lab.common.Id;
+import io.dkakunsi.lab.common.process.Process;
+import io.dkakunsi.lab.common.process.ProcessError;
+import io.dkakunsi.lab.common.process.ProcessInput;
+import io.dkakunsi.lab.common.process.ProcessResult;
 import io.dkakunsi.money.account.model.Account;
 import io.dkakunsi.money.account.port.AccountPort;
 import io.dkakunsi.money.user.model.User;

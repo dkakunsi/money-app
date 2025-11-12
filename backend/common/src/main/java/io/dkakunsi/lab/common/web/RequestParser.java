@@ -1,9 +1,9 @@
-package io.dkakunsi.common.web;
+package io.dkakunsi.lab.common.web;
 
 import java.util.Map;
 
-import io.dkakunsi.common.Context;
-import io.dkakunsi.common.process.ProcessInput;
+import io.dkakunsi.lab.common.Context;
+import io.dkakunsi.lab.common.process.ProcessInput;
 
 @FunctionalInterface
 public interface RequestParser<T> {

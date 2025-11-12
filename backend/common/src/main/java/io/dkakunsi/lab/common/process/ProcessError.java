@@ -1,4 +1,4 @@
-package io.dkakunsi.common.process;
+package io.dkakunsi.lab.common.process;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,7 @@
-package io.dkakunsi.common.web;
+package io.dkakunsi.lab.common.web;
 
-import io.dkakunsi.common.security.AuthorizedPrincipal;
-import io.dkakunsi.common.security.Authorizer;
+import io.dkakunsi.lab.common.security.AuthorizedPrincipal;
+import io.dkakunsi.lab.common.security.Authorizer;
 import lombok.Getter;
 
 public abstract class Endpoint<S, T> {
@@ -26,7 +26,7 @@ public abstract class Endpoint<S, T> {
     }
   }
 
-  protected io.dkakunsi.common.process.Process<S, T> process;
+  protected io.dkakunsi.lab.common.process.Process<S, T> process;
 
   protected Method method;
 
@@ -38,7 +38,7 @@ public abstract class Endpoint<S, T> {
 
   protected ResponseParser<T> responseParser;
 
-  protected Endpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path,
+  protected Endpoint(io.dkakunsi.lab.common.process.Process<S, T> process, Method method, String path,
       RequestParser<S> requestParser, ResponseParser<T> responseParser, Authorizer authorizer) {
     this.process = process;
     this.path = path;

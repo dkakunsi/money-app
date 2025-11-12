@@ -1,11 +1,11 @@
-package io.dkakunsi.javalin;
+package io.dkakunsi.lab.javalin;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import io.dkakunsi.common.DefaultLogger;
-import io.dkakunsi.common.Logger;
+import io.dkakunsi.lab.common.DefaultLogger;
+import io.dkakunsi.lab.common.Logger;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.http.ExceptionHandler;

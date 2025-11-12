@@ -15,9 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import io.dkakunsi.common.Context;
-import io.dkakunsi.common.process.ProcessError;
-import io.dkakunsi.common.process.ProcessInput;
+import io.dkakunsi.lab.common.Context;
+import io.dkakunsi.lab.common.process.ProcessError;
+import io.dkakunsi.lab.common.process.ProcessInput;
 import io.dkakunsi.money.account.model.Account;
 import io.dkakunsi.money.account.port.AccountPort;
 

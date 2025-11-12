@@ -1,4 +1,4 @@
-package io.dkakunsi.common;
+package io.dkakunsi.lab.common;
 
 import org.apache.commons.lang3.StringUtils;
 
