@@ -16,17 +16,17 @@ import org.junit.jupiter.api.Test;
 
 import io.dkakunsi.common.Context;
 import io.dkakunsi.common.ProcessInput;
-import io.dkakunsi.money.account.repository.AccountRepository;
+import io.dkakunsi.money.account.port.AccountPort;
 
 public final class CreateAccountProcessTest {
 
   private CreateAccountProcess underTest;
 
-  private AccountRepository accountRepository;
+  private AccountPort accountRepository;
 
   @BeforeEach
   void setUp() {
-    accountRepository = mock(AccountRepository.class);
+    accountRepository = mock(AccountPort.class);
     underTest = new CreateAccountProcess(accountRepository);
   }
 

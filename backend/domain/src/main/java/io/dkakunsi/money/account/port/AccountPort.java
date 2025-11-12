@@ -1,7 +1,7 @@
-package io.dkakunsi.money.account.repository;
+package io.dkakunsi.money.account.port;
 
 import io.dkakunsi.money.account.model.Account;
 
-public interface AccountRepository {
+public interface AccountPort {
   Account upsert(Account account);
 }

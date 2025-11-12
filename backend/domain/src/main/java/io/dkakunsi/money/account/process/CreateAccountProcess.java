@@ -9,13 +9,13 @@ import io.dkakunsi.common.ProcessInput;
 import io.dkakunsi.common.ProcessResult;
 import io.dkakunsi.money.account.model.Account;
 import io.dkakunsi.money.account.model.User;
-import io.dkakunsi.money.account.repository.AccountRepository;
+import io.dkakunsi.money.account.port.AccountPort;
 
 public final class CreateAccountProcess implements Process<CreateAccountInput, Account> {
 
-  private final AccountRepository accountRepository;
+  private final AccountPort accountRepository;
 
-  public CreateAccountProcess(AccountRepository accountRepository) {
+  public CreateAccountProcess(AccountPort accountRepository) {
     this.accountRepository = accountRepository;
   }
 
