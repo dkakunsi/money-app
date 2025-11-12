@@ -22,7 +22,7 @@ public final class CreateAccountProcess implements Process<CreateAccountInput, A
 
   @Override
   public ProcessResult<Account> process(ProcessInput<CreateAccountInput> input) {
-    final var account = toModel(input.data(), input.activeUser(), input.requester());
+    final var account = toModel(input.data(), input.requester());
     try {
       var result = this.accountRepository.create(account);
       return ProcessResult.success(result);
@@ -31,8 +31,8 @@ public final class CreateAccountProcess implements Process<CreateAccountInput, A
     }
   }
 
-  private static Account toModel(CreateAccountInput input, String activeUser, String requester) {
-    final var user = User.builder().id(Id.of(activeUser)).build();
+  private static Account toModel(CreateAccountInput input, String requester) {
+    final var user = User.builder().id(Id.of(requester)).build();
     final var now = LocalDateTime.now();
     final var executor = requester;
     return Account.builder()

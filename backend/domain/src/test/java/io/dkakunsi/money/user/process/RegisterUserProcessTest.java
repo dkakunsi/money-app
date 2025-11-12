@@ -52,7 +52,7 @@ public final class RegisterUserProcessTest {
         .photoUrl(photoUrl)
         .build();
 
-    var context = new Context(REQUESTER, null);
+    var context = Context.builder().requester(REQUESTER).build();
     var processInput = new ProcessInput<>(registerInput, context);
 
     when(userPort.findByEmail(email)).thenReturn(Optional.empty());
@@ -66,7 +66,6 @@ public final class RegisterUserProcessTest {
 
     var createdUser = result.data().get();
     assertEquals(username, createdUser.getName());
-    assertEquals(email, createdUser.getEmail());
     assertEquals(phone, createdUser.getPhone());
     assertEquals(photoUrl, createdUser.getPhotoUrl());
     assertEquals(Language.EN, createdUser.getLanguage());
@@ -78,7 +77,6 @@ public final class RegisterUserProcessTest {
     verify(userPort).save(userCaptor.capture());
     var savedUser = userCaptor.getValue();
     assertEquals(username, savedUser.getName());
-    assertEquals(email, savedUser.getEmail());
     assertEquals(phone, savedUser.getPhone());
     assertEquals(photoUrl, savedUser.getPhotoUrl());
     assertEquals(Language.EN, savedUser.getLanguage());
@@ -88,7 +86,6 @@ public final class RegisterUserProcessTest {
   @Test
   public void givenValidRegisterUserRequestWhenUserExistsThenShouldUpdateUserAndSuccess() {
     // Given
-    var existingId = "existing-id";
     var existingUsername = "User Name";
     var email = "user@email.com";
     var phone = "081234567890";
@@ -101,12 +98,11 @@ public final class RegisterUserProcessTest {
         .photoUrl(photoUrl)
         .build();
 
-    var context = new Context(REQUESTER, null);
+    var context = Context.builder().requester(REQUESTER).build();
     var processInput = new ProcessInput<>(registerInput, context);
 
     var existingUser = User.builder()
-        .id(Id.of(existingId))
-        .email(email)
+        .id(Id.of(email))
         .name(existingUsername)
         .language(Language.EN)
         .phone(phone)
@@ -124,9 +120,8 @@ public final class RegisterUserProcessTest {
     verify(userPort).findByEmail(email);
 
     var createdUser = result.data().get();
-    assertEquals(existingId, createdUser.getId().value());
+    assertEquals(email, createdUser.getId().value());
     assertEquals(updatingUserName, createdUser.getName());
-    assertEquals(email, createdUser.getEmail());
     assertEquals(phone, createdUser.getPhone());
     assertEquals(photoUrl, createdUser.getPhotoUrl());
     assertEquals(Language.EN, createdUser.getLanguage());
@@ -134,9 +129,8 @@ public final class RegisterUserProcessTest {
     var userCaptor = ArgumentCaptor.forClass(User.class);
     verify(userPort).save(userCaptor.capture());
     var savedUser = userCaptor.getValue();
-    assertEquals(existingId, savedUser.getId().value());
+    assertEquals(email, savedUser.getId().value());
     assertEquals(updatingUserName, savedUser.getName());
-    assertEquals(email, savedUser.getEmail());
     assertEquals(phone, savedUser.getPhone());
     assertEquals(photoUrl, savedUser.getPhotoUrl());
     assertEquals(Language.EN, savedUser.getLanguage());
@@ -145,7 +139,6 @@ public final class RegisterUserProcessTest {
   @Test
   public void givenValidRegisterUserRequestWhenUserExistsWithNoChangesThenShouldNotSaveAndSuccess() {
     // Given
-    var existingId = "existing-id";
     var username = "User Name";
     var email = "user@email.com";
     var phone = "081234567890";
@@ -157,12 +150,11 @@ public final class RegisterUserProcessTest {
         .photoUrl(photoUrl)
         .build();
 
-    var context = new Context(REQUESTER, null);
+    var context = Context.builder().requester(REQUESTER).build();
     var processInput = new ProcessInput<>(registerInput, context);
 
     var existingUser = User.builder()
-        .id(Id.of(existingId))
-        .email(email)
+        .id(Id.of(email))
         .name(username)
         .language(Language.EN)
         .phone(phone)
@@ -180,9 +172,8 @@ public final class RegisterUserProcessTest {
     verify(userPort).findByEmail(email);
 
     var createdUser = result.data().get();
-    assertEquals(existingId, createdUser.getId().value());
+    assertEquals(email, createdUser.getId().value());
     assertEquals(username, createdUser.getName());
-    assertEquals(email, createdUser.getEmail());
     assertEquals(phone, createdUser.getPhone());
     assertEquals(photoUrl, createdUser.getPhotoUrl());
     assertEquals(Language.EN, createdUser.getLanguage());
@@ -196,7 +187,7 @@ public final class RegisterUserProcessTest {
     when(userPort.save(any())).thenThrow(new RuntimeException("An error occured"));
 
     var registerInput = RegisterUserInput.builder().build();
-    var context = new Context(REQUESTER, null);
+    var context = Context.builder().requester(REQUESTER).build();
     var processInput = new ProcessInput<>(registerInput, context);
 
     // When

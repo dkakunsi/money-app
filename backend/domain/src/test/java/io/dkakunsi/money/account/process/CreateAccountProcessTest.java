@@ -28,7 +28,6 @@ public final class CreateAccountProcessTest {
   private AccountPort accountPort;
 
   private static final String REQUESTER = "Requester";
-  private static final String ACTIVE_USER = "User001";
 
   @BeforeEach
   void setUp() {
@@ -44,7 +43,7 @@ public final class CreateAccountProcessTest {
         .type(Account.Type.BANK)
         .themeColor("#FF5733")
         .build();
-    final var context = Context.builder().requester(REQUESTER).activeUser(ACTIVE_USER).build();
+    final var context = Context.builder().requester(REQUESTER).build();
     final var input = new ProcessInput<>(createRequest, context);
 
     when(accountPort.create(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -67,7 +66,7 @@ public final class CreateAccountProcessTest {
     assertEquals(REQUESTER, resultData.getUpdatedBy());
     assertNotNull(resultData.getCreatedAt());
     assertNotNull(resultData.getUpdatedAt());
-    assertEquals(ACTIVE_USER, resultData.getUser().getId().value());
+    assertEquals(REQUESTER, resultData.getUser().getId().value());
 
     // verify data passed to port
     var savingAccountCaptor = ArgumentCaptor.forClass(Account.class);
@@ -82,7 +81,7 @@ public final class CreateAccountProcessTest {
     assertNotNull(capturedAccount.getCreatedAt());
     assertNotNull(capturedAccount.getUpdatedAt());
     assertNotNull(capturedAccount.getId());
-    assertEquals(ACTIVE_USER, capturedAccount.getUser().getId().value());
+    assertEquals(REQUESTER, capturedAccount.getUser().getId().value());
   }
 
   @Test
@@ -93,7 +92,7 @@ public final class CreateAccountProcessTest {
         .type(Account.Type.BANK)
         .themeColor("#FF5733")
         .build();
-    final var context = Context.builder().requester(REQUESTER).activeUser(ACTIVE_USER).build();
+    final var context = Context.builder().requester(REQUESTER).build();
     final var input = new ProcessInput<>(createRequest, context);
 
     when(accountPort.create(any())).thenThrow(new RuntimeException("An error occurred"));

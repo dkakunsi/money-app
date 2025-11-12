@@ -1,0 +1,207 @@
+package io.dkakunsi.javalin;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import io.dkakunsi.common.Endpoint.Method;
+import io.dkakunsi.common.process.ProcessError;
+import io.dkakunsi.common.process.ProcessInput;
+import io.dkakunsi.common.process.ProcessResult;
+import io.dkakunsi.common.security.AuthorizedPrincipal;
+import io.dkakunsi.common.security.Authorizer;
+import io.dkakunsi.javalin.endpoint.TestEndpoint;
+import io.dkakunsi.javalin.endpoint.TestObject;
+import io.dkakunsi.javalin.endpoint.TestObjectInput;
+import kong.unirest.Unirest;
+
+class JavalinWebTest {
+
+  private static final String BASE_URL = "http://localhost:20000";
+
+  private static io.dkakunsi.common.process.Process<TestObjectInput, TestObject> process;
+
+  private static JavalinServer server;
+
+  private static Authorizer authorizer;
+
+  @SuppressWarnings("unchecked")
+  @BeforeAll
+  static void setup() throws Exception {
+    process = (io.dkakunsi.common.process.Process<TestObjectInput, TestObject>) mock(
+        io.dkakunsi.common.process.Process.class);
+    authorizer = mock(Authorizer.class);
+    var postEndpoint = new TestEndpoint(process, Method.POST, "/test");
+    var putEndpoint = new TestEndpoint(process, Method.PUT, "/test/{code}");
+    putEndpoint.authorizer(authorizer);
+
+    server = new JavalinServer(20000);
+    server.addEndpoint(postEndpoint).addEndpoint(putEndpoint);
+    server.start();
+  }
+
+  @AfterAll
+  static void destroy() {
+    server.stop();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void givenValidRequest_WhenRequested_ThenShouldOkAndReturnObject() {
+    // Given
+    var body = """
+        {"code":"code","name":"name"}
+        """;
+    var result = mock(ProcessResult.class);
+    when(result.isSuccess()).thenReturn(true);
+    when(result.isEmpty()).thenReturn(false);
+    when(result.isFailed()).thenReturn(false);
+    when(result.data()).thenReturn(Optional.of(TestObject.builder()
+        .code("code")
+        .name("name")
+        .build()));
+    when(process.process(any(ProcessInput.class))).thenReturn(result);
+
+    // When
+    var response = Unirest.post(BASE_URL + "/test").body(body).asString();
+
+    // Then
+    assertEquals(200, response.getStatus());
+
+    var responseBody = response.getBody();
+    assertNotNull(responseBody);
+    assertTrue(responseBody.contains("\"code\":\"code\""));
+    assertTrue(responseBody.contains("\"name\":\"name\""));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void givenValidRequestAndEmptyOutput_WhenRequested_ThenShouldOkWithEmptyResponse() {
+    // Given
+    var body = """
+        {"code":"code","name":"name"}
+        """;
+    var output = mock(ProcessResult.class);
+    when(output.isSuccess()).thenReturn(true);
+    when(output.isEmpty()).thenReturn(true);
+    when(output.isFailed()).thenReturn(false);
+    when(process.process(any(ProcessInput.class))).thenReturn(output);
+
+    // When
+    var response = Unirest.post(BASE_URL + "/test").body(body).asString();
+
+    // Then
+    assertEquals(200, response.getStatus());
+
+    var responseBody = response.getBody();
+    assertEquals("", responseBody);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void givenValidRequestAndProcessReturnsError_WhenRequested_ThenShouldReturnProperMessage() {
+    // Given
+    var body = """
+        {"code":"code","name":"name"}
+        """;
+    var output = mock(ProcessResult.class);
+    when(output.isSuccess()).thenReturn(false);
+    when(output.isFailed()).thenReturn(true);
+    when(output.error()).thenReturn(Optional.of(new ProcessError(ProcessError.Code.SERVER_ERROR, "Invalid input")));
+    when(process.process(any(ProcessInput.class))).thenReturn(output);
+    // When
+    var response = Unirest.post(BASE_URL + "/test").body(body).asString();
+
+    // Then
+    assertEquals(500, response.getStatus());
+
+    var responseBody = response.getBody();
+    assertThat(responseBody, is("Invalid input"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void givenValidAndAuthorizedRequestAnd_WhenRequested_ThenShouldOk() {
+    // Given
+    var body = """
+        {"code":"code","name":"name"}
+        """;
+    var output = mock(ProcessResult.class);
+    when(output.isSuccess()).thenReturn(true);
+    when(output.isFailed()).thenReturn(false);
+    when(output.data()).thenReturn(Optional.of(TestObject.builder()
+        .code("code")
+        .name("name")
+        .build()));
+    when(process.process(any(ProcessInput.class))).thenReturn(output);
+    doReturn(new AuthorizedPrincipal("Requester")).when(authorizer).verify(anyString());
+
+    // When
+    var response = Unirest.put(BASE_URL + "/test/id")
+        .header("Authorization", "JWT_Token")
+        .body(body)
+        .asString();
+
+    // Then
+    assertEquals(200, response.getStatus());
+
+    var responseBody = response.getBody();
+    assertNotNull(responseBody);
+    assertTrue(responseBody.contains("\"code\":\"code\""));
+    assertTrue(responseBody.contains("\"name\":\"name\""));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void givenValidAndUnauthorizedRequestAnd_WhenRequested_ThenShouldReturnUnauthorized() {
+    // Given
+    var body = """
+        {"code":"code","name":"name"}
+        """;
+    var output = mock(ProcessResult.class);
+    when(output.isSuccess()).thenReturn(true);
+    when(output.isFailed()).thenReturn(false);
+    when(output.data()).thenReturn(Optional.of(TestObject.builder()
+        .code("code")
+        .name("name")
+        .build()));
+    when(process.process(any(ProcessInput.class))).thenReturn(output);
+    when(authorizer.verify(anyString())).thenThrow(new IllegalArgumentException());
+
+    // When
+    var response = Unirest.put(BASE_URL + "/test/id")
+        .header("Authorization", "JWT_Token")
+        .body(body)
+        .asString();
+
+    // Then
+    assertEquals(401, response.getStatus());
+  }
+
+  @Test
+  void givenInvalidTargetUrl_WhenRequested_ThenShouldReturnNotFound() {
+    // Given
+    var body = """
+        {"code":"code","name":"name"}
+        """;
+
+    // When
+    var response = Unirest.delete(BASE_URL + "/test/id").body(body).asString();
+
+    // Then
+    assertEquals(404, response.getStatus());
+  }
+}

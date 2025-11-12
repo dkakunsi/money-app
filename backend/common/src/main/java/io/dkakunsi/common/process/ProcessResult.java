@@ -12,6 +12,14 @@ public final record ProcessResult<DATA>(
     return error.isEmpty();
   }
 
+  public boolean isFailed() {
+    return !isSuccess();
+  }
+
+  public boolean isEmpty() {
+    return data.isEmpty();
+  }
+
   public static <DATA> ProcessResult<DATA> success() {
     return new ProcessResult<>(Optional.empty(), Optional.empty());
   }
@@ -24,4 +32,5 @@ public final record ProcessResult<DATA>(
     final var error = new ProcessError(serverError, message);
     return new ProcessResult<>(Optional.empty(), Optional.of(error));
   }
+
 }

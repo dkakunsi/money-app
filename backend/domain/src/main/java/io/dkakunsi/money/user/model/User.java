@@ -13,9 +13,9 @@ public final class User {
 
   private static final Language DEFAULT_LANGUAGE = Language.EN;
 
+  // email as Id
   private Id id;
   private String name;
-  private String email;
   private String phone;
   private String photoUrl;
   private Language language;
@@ -57,7 +57,6 @@ public final class User {
     return User.builder()
         .id(Id.generate())
         .name(userInput.name())
-        .email(userInput.email())
         .phone(userInput.phone())
         .photoUrl(userInput.photoUrl())
         .language(DEFAULT_LANGUAGE)
