@@ -11,21 +11,22 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import io.dkakunsi.common.Context;
 import io.dkakunsi.common.process.ProcessError;
 import io.dkakunsi.common.process.ProcessInput;
 import io.dkakunsi.common.process.ProcessResult;
 import io.dkakunsi.common.security.AuthorizedPrincipal;
 import io.dkakunsi.common.security.Authorizer;
 import io.dkakunsi.common.web.Endpoint.Method;
-import io.dkakunsi.javalin.endpoint.TestEndpoint;
-import io.dkakunsi.javalin.endpoint.TestObject;
-import io.dkakunsi.javalin.endpoint.TestObjectInput;
+import io.dkakunsi.javalin.object.TestObject;
+import io.dkakunsi.javalin.object.TestObjectInput;
 import kong.unirest.Unirest;
 
 class JavalinWebTest {
@@ -38,15 +39,46 @@ class JavalinWebTest {
 
   private static Authorizer authorizer;
 
+  private static class Parser {
+
+    static ProcessInput<TestObjectInput> parseRequest(String body, Map<String, String> pathParams,
+        Context context) {
+      var object = TestObjectInput.builder()
+          .code("code-123")
+          .name("Test Name")
+          .build();
+      return new ProcessInput<TestObjectInput>(object, context);
+    }
+
+    static String parseResponse(ProcessResult<TestObject> result) {
+      var obj = result.data().get();
+      return """
+            {"code":"%s","name":"%s"}
+          """.formatted(obj.getCode(), obj.getName());
+    }
+  }
+
   @SuppressWarnings("unchecked")
   @BeforeAll
   static void setup() throws Exception {
     process = (io.dkakunsi.common.process.Process<TestObjectInput, TestObject>) mock(
         io.dkakunsi.common.process.Process.class);
     authorizer = mock(Authorizer.class);
-    var postEndpoint = new TestEndpoint(process, Method.POST, "/test");
-    var putEndpoint = new TestEndpoint(process, Method.PUT, "/test/{code}");
-    putEndpoint.authorizer(authorizer);
+    var postEndpoint = JavalinEndpoint.<TestObjectInput, TestObject>builder()
+        .process(process)
+        .method(Method.POST)
+        .path("/test")
+        .requestParser(Parser::parseRequest)
+        .responseParser(Parser::parseResponse)
+        .build();
+    var putEndpoint = JavalinEndpoint.<TestObjectInput, TestObject>builder()
+        .process(process)
+        .method(Method.PUT)
+        .path("/test/{code}")
+        .requestParser(Parser::parseRequest)
+        .responseParser(Parser::parseResponse)
+        .authorizer(authorizer)
+        .build();
 
     server = new JavalinServer(20000);
     server.addEndpoint(postEndpoint).addEndpoint(putEndpoint);

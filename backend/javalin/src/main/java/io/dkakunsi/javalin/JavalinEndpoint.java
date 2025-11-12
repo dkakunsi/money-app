@@ -2,17 +2,20 @@ package io.dkakunsi.javalin;
 
 import io.dkakunsi.common.Context;
 import io.dkakunsi.common.security.AuthorizedPrincipal;
+import io.dkakunsi.common.security.Authorizer;
 import io.dkakunsi.common.web.RequestParser;
 import io.dkakunsi.common.web.ResponseParser;
 import io.javalin.http.Handler;
 import io.javalin.http.HandlerType;
 import io.javalin.http.UnauthorizedResponse;
+import lombok.Builder;
 
-public abstract class JavalinEndpoint<S, T> extends io.dkakunsi.common.web.Endpoint<S, T> {
+public class JavalinEndpoint<S, T> extends io.dkakunsi.common.web.Endpoint<S, T> {
 
-  protected JavalinEndpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path,
-      RequestParser<S> requestParser, ResponseParser<T> responseParser) {
-    super(process, method, path, requestParser, responseParser);
+  @Builder
+  public JavalinEndpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path,
+      RequestParser<S> requestParser, ResponseParser<T> responseParser, Authorizer authorizer) {
+    super(process, method, path, requestParser, responseParser, authorizer);
   }
 
   public HandlerType getHandlerType() {

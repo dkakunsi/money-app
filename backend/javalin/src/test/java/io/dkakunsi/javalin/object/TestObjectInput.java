@@ -1,4 +1,4 @@
-package io.dkakunsi.javalin.endpoint;
+package io.dkakunsi.javalin.object;
 
 import lombok.Builder;
 

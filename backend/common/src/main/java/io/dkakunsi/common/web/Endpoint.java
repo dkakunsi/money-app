@@ -8,6 +8,8 @@ public abstract class Endpoint<S, T> {
 
   protected static final int SUCCESS_RC = 200;
 
+  protected static final String APPLICATION_JSON = "application/json";
+
   public static enum Method {
     POST, PUT, PATCH, GET, DELETE, OPTIONS
   }
@@ -24,8 +26,6 @@ public abstract class Endpoint<S, T> {
     }
   }
 
-  protected static String APPLICATION_JSON = "application/json";
-
   protected io.dkakunsi.common.process.Process<S, T> process;
 
   protected Method method;
@@ -39,17 +39,13 @@ public abstract class Endpoint<S, T> {
   protected ResponseParser<T> responseParser;
 
   protected Endpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path,
-      RequestParser<S> requestParser, ResponseParser<T> responseParser) {
+      RequestParser<S> requestParser, ResponseParser<T> responseParser, Authorizer authorizer) {
     this.process = process;
     this.path = path;
     this.method = method;
     this.requestParser = requestParser;
     this.responseParser = responseParser;
-  }
-
-  public Endpoint<S, T> authorizer(Authorizer authorizer) {
     this.authorizer = authorizer;
-    return this;
   }
 
   public Method getMethod() {
