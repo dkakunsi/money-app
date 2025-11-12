@@ -1,13 +1,10 @@
 package io.dkakunsi.javalin;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -161,7 +158,7 @@ class JavalinWebTest {
     assertEquals(500, response.getStatus());
 
     var responseBody = response.getBody();
-    assertThat(responseBody, is("Invalid input"));
+    assertEquals("Invalid input", responseBody);
   }
 
   @SuppressWarnings("unchecked")
@@ -179,7 +176,7 @@ class JavalinWebTest {
         .name("name")
         .build()));
     when(process.process(any(ProcessInput.class))).thenReturn(output);
-    doReturn(new AuthorizedPrincipal("Requester")).when(authorizer).verify(anyString());
+    when(authorizer.verify(anyString())).thenReturn(new AuthorizedPrincipal("Requester"));
 
     // When
     var response = Unirest.put(BASE_URL + "/test/id")
