@@ -2,32 +2,19 @@ package io.dkakunsi.common;
 
 import java.util.Optional;
 
-import lombok.Getter;
-
-@Getter
-public final class ProcessResult<DATA> {
-
-  private Optional<DATA> data;
-  private Optional<ProcessError> error;
-
-  private ProcessResult() {
-    this.error = Optional.empty();
-  }
-
-  private ProcessResult(DATA data) {
-    this.data = Optional.of(data);
-    this.error = Optional.empty();
-  }
+public final record ProcessResult<DATA>(
+    Optional<DATA> data,
+    Optional<ProcessError> error) {
 
   public boolean isSuccess() {
     return error.isEmpty();
   }
 
   public static <DATA> ProcessResult<DATA> success() {
-    return new ProcessResult<>();
+    return new ProcessResult<>(Optional.empty(), Optional.empty());
   }
 
   public static <DATA> ProcessResult<DATA> success(DATA data) {
-    return new ProcessResult<>(data);
+    return new ProcessResult<>(Optional.of(data), Optional.empty());
   }
 }

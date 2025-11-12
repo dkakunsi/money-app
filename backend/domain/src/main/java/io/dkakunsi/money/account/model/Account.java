@@ -29,19 +29,4 @@ public final class Account {
     EWALLET,
     OTHER
   }
-
-  public boolean hasId() {
-    return id != null;
-  }
-
-  public void initializeNewAccount(String creator) {
-    final var now = LocalDateTime.now();
-    final var executor = creator != null ? creator : "N/A";
-    this.id = Id.generate();
-    this.balance = BigDecimal.ZERO;
-    this.createdAt = now;
-    this.updatedAt = now;
-    this.createdBy = executor;
-    this.updatedBy = executor;
-  }
 }

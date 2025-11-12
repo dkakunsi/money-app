@@ -18,33 +18,31 @@ import io.dkakunsi.common.Context;
 import io.dkakunsi.common.ProcessInput;
 import io.dkakunsi.money.account.repository.AccountRepository;
 
-public final class UpsertAccountProcessTest {
+public final class CreateAccountProcessTest {
 
-  private UpsertAccountProcess underTest;
+  private CreateAccountProcess underTest;
 
   private AccountRepository accountRepository;
 
   @BeforeEach
   void setUp() {
     accountRepository = mock(AccountRepository.class);
-    underTest = new UpsertAccountProcess(accountRepository);
+    underTest = new CreateAccountProcess(accountRepository);
   }
 
   @Test
-  void givenValidCreateAccountRequestWhenAccountDoesNotExistsThenShouldSuccessfullyCreated() {
+  void givenValidInsertAccountRequestWhenAccountDoesNotExistsThenShouldSuccessfullyCreated() {
     // Given
-    final var createRequest = UpsertAccountInput.builder()
+    final var requester = "Requester";
+    final var createRequest = CreateAccountInput.builder()
         .name("Savings Account")
         .type("BANK")
         .themeColor("#FF5733")
         .build();
     final var context = mock(Context.class);
-    when(context.getRequester()).thenReturn("Requester");
-    final var input = ProcessInput.<UpsertAccountInput>builder()
-        .data(createRequest)
-        .context(context)
-        .build();
+    final var input = new ProcessInput<>(createRequest, context);
 
+    when(context.requester()).thenReturn(requester);
     when(accountRepository.upsert(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
     // When
@@ -52,29 +50,25 @@ public final class UpsertAccountProcessTest {
 
     // Then
     assertTrue(result.isSuccess());
-    assertTrue(result.getData().isPresent());
+    assertTrue(result.data().isPresent());
 
-    final var data = result.getData().get();
+    final var data = result.data().get();
     assertNotNull(data.getId());
-    assertEquals(createRequest.getName(), data.getName());
-    assertEquals(createRequest.getType(), data.getType().name());
-    assertEquals(createRequest.getThemeColor(), data.getThemeColor());
+    assertEquals(createRequest.name(), data.getName());
+    assertEquals(createRequest.type(), data.getType().name());
+    assertEquals(createRequest.themeColor(), data.getThemeColor());
     assertEquals(BigDecimal.ZERO, data.getBalance());
 
     verify(accountRepository).upsert(argThat(saved -> {
-      try {
-        return createRequest.getName().equals(saved.getName())
-            && createRequest.getType().equals(saved.getType().name())
-            && createRequest.getThemeColor().equals(saved.getThemeColor())
-            && BigDecimal.ZERO.equals(saved.getBalance())
-            && saved.getId() != null
-            && saved.getCreatedAt() != null
-            && saved.getUpdatedAt() != null
-            && "Requester".equals(saved.getCreatedBy())
-            && "Requester".equals(saved.getUpdatedBy());
-      } catch (Exception e) {
-        return false;
-      }
+      return createRequest.name().equals(saved.getName())
+          && createRequest.type().equals(saved.getType().name())
+          && createRequest.themeColor().equals(saved.getThemeColor())
+          && BigDecimal.ZERO.equals(saved.getBalance())
+          && saved.getId() != null
+          && saved.getCreatedAt() != null
+          && saved.getUpdatedAt() != null
+          && requester.equals(saved.getCreatedBy())
+          && requester.equals(saved.getUpdatedBy());
     }));
   }
 }

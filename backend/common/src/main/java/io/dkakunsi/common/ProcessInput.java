@@ -1,12 +1,16 @@
 package io.dkakunsi.common;
 
-import lombok.Builder;
-import lombok.Getter;
+public final record ProcessInput<DATA>(DATA data, Context context) {
+  public ProcessInput {
+    if (data == null) {
+      throw new IllegalArgumentException("Data cannot be null");
+    }
+    if (context == null) {
+      throw new IllegalArgumentException("Context cannot be null");
+    }
+  }
 
-@Builder
-@Getter
-public final class ProcessInput<DATA> {
-
-  private DATA data;
-  private Context context;
+  public String requester() {
+    return context.requester();
+  }
 }

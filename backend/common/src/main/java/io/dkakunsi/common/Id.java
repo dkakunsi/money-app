@@ -2,17 +2,13 @@ package io.dkakunsi.common;
 
 import java.util.UUID;
 
-import lombok.Builder;
-import lombok.Getter;
-
-@Builder
-@Getter
-public final class Id {
-
-  private String value;
+public final record Id(String value) {
+  public static Id of(String value) {
+    return new Id(value);
+  }
 
   public static Id generate() {
     final var uuid = UUID.randomUUID().toString();
-    return new Id(uuid);
+    return Id.of(uuid);
   }
 }
