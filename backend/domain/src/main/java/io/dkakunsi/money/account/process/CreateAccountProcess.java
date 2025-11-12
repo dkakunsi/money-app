@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import io.dkakunsi.common.Id;
-import io.dkakunsi.common.Process;
-import io.dkakunsi.common.ProcessError;
-import io.dkakunsi.common.ProcessInput;
-import io.dkakunsi.common.ProcessResult;
+import io.dkakunsi.common.process.Process;
+import io.dkakunsi.common.process.ProcessError;
+import io.dkakunsi.common.process.ProcessInput;
+import io.dkakunsi.common.process.ProcessResult;
 import io.dkakunsi.money.account.model.Account;
 import io.dkakunsi.money.account.model.User;
 import io.dkakunsi.money.account.port.AccountPort;

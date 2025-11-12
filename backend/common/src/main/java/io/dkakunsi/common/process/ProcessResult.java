@@ -1,8 +1,8 @@
-package io.dkakunsi.common;
+package io.dkakunsi.common.process;
 
 import java.util.Optional;
 
-import io.dkakunsi.common.ProcessError.Code;
+import io.dkakunsi.common.process.ProcessError.Code;
 
 public final record ProcessResult<DATA>(
     Optional<DATA> data,
