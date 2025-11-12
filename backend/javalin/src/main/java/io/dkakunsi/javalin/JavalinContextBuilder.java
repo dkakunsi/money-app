@@ -1,7 +1,7 @@
 package io.dkakunsi.javalin;
 
-import io.dkakunsi.common.Endpoint.Header;
 import io.dkakunsi.common.security.AuthorizedPrincipal;
+import io.dkakunsi.common.web.Endpoint.Header;
 import lombok.Builder;
 
 @Builder

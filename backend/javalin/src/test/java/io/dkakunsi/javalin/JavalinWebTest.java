@@ -17,12 +17,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.dkakunsi.common.Endpoint.Method;
 import io.dkakunsi.common.process.ProcessError;
 import io.dkakunsi.common.process.ProcessInput;
 import io.dkakunsi.common.process.ProcessResult;
 import io.dkakunsi.common.security.AuthorizedPrincipal;
 import io.dkakunsi.common.security.Authorizer;
+import io.dkakunsi.common.web.Endpoint.Method;
 import io.dkakunsi.javalin.endpoint.TestEndpoint;
 import io.dkakunsi.javalin.endpoint.TestObject;
 import io.dkakunsi.javalin.endpoint.TestObjectInput;

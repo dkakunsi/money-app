@@ -1,4 +1,4 @@
-package io.dkakunsi.common;
+package io.dkakunsi.common.web;
 
 import io.dkakunsi.common.security.AuthorizedPrincipal;
 import io.dkakunsi.common.security.Authorizer;
@@ -34,10 +34,17 @@ public abstract class Endpoint<S, T> {
 
   protected Authorizer authorizer;
 
-  protected Endpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path) {
+  protected RequestParser<S> requestParser;
+
+  protected ResponseParser<T> responseParser;
+
+  protected Endpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path,
+      RequestParser<S> requestParser, ResponseParser<T> responseParser) {
     this.process = process;
     this.path = path;
     this.method = method;
+    this.requestParser = requestParser;
+    this.responseParser = responseParser;
   }
 
   public Endpoint<S, T> authorizer(Authorizer authorizer) {

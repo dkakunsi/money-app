@@ -11,11 +11,11 @@ public class TestEndpoint extends JavalinEndpoint<TestObjectInput, TestObject> {
 
   public TestEndpoint(io.dkakunsi.common.process.Process<TestObjectInput, TestObject> process, Method method,
       String path) {
-    super(process, method, path);
+    super(process, method, path, TestEndpoint::parseRequest, TestEndpoint::parseResponse);
   }
 
-  @Override
-  protected ProcessInput<TestObjectInput> parseRequest(String body, Map<String, String> pathParams, Context context) {
+  private static ProcessInput<TestObjectInput> parseRequest(String body, Map<String, String> pathParams,
+      Context context) {
     var object = TestObjectInput.builder()
         .code("code-123")
         .name("Test Name")
@@ -23,8 +23,7 @@ public class TestEndpoint extends JavalinEndpoint<TestObjectInput, TestObject> {
     return new ProcessInput<TestObjectInput>(object, context);
   }
 
-  @Override
-  protected String parseResponse(ProcessResult<TestObject> result) {
+  private static String parseResponse(ProcessResult<TestObject> result) {
     var obj = result.data().get();
     return """
           {"code":"%s","name":"%s"}

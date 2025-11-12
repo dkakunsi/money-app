@@ -35,9 +35,8 @@ public final class JavalinServer {
     this(8080);
   }
 
-  @SuppressWarnings("rawtypes")
-  public JavalinServer addEndpoint(JavalinEndpoint enpoint) {
-    endpoints.add(enpoint);
+  public <S, T> JavalinServer addEndpoint(JavalinEndpoint<S, T> endpoint) {
+    endpoints.add(endpoint);
     return this;
   }
 

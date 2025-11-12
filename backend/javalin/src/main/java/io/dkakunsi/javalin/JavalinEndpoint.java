@@ -1,19 +1,18 @@
 package io.dkakunsi.javalin;
 
-import java.util.Map;
-
 import io.dkakunsi.common.Context;
-import io.dkakunsi.common.process.ProcessInput;
-import io.dkakunsi.common.process.ProcessResult;
 import io.dkakunsi.common.security.AuthorizedPrincipal;
+import io.dkakunsi.common.web.RequestParser;
+import io.dkakunsi.common.web.ResponseParser;
 import io.javalin.http.Handler;
 import io.javalin.http.HandlerType;
 import io.javalin.http.UnauthorizedResponse;
 
-public abstract class JavalinEndpoint<S, T> extends io.dkakunsi.common.Endpoint<S, T> {
+public abstract class JavalinEndpoint<S, T> extends io.dkakunsi.common.web.Endpoint<S, T> {
 
-  protected JavalinEndpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path) {
-    super(process, method, path);
+  protected JavalinEndpoint(io.dkakunsi.common.process.Process<S, T> process, Method method, String path,
+      RequestParser<S> requestParser, ResponseParser<T> responseParser) {
+    super(process, method, path, requestParser, responseParser);
   }
 
   public HandlerType getHandlerType() {
@@ -37,7 +36,7 @@ public abstract class JavalinEndpoint<S, T> extends io.dkakunsi.common.Endpoint<
     return ctx -> {
       var principal = authorizeRequest(ctx);
       var context = initiateContext(ctx, principal);
-      var input = parseRequest(ctx.body(), ctx.pathParamMap(), context);
+      var input = requestParser.parse(ctx.body(), ctx.pathParamMap(), context);
       var output = process.process(input);
       if (output.isFailed()) {
         var error = output.error().get();
@@ -45,7 +44,7 @@ public abstract class JavalinEndpoint<S, T> extends io.dkakunsi.common.Endpoint<
       } else if (output.isEmpty()) {
         ctx.status(SUCCESS_RC);
       } else {
-        var response = parseResponse(output);
+        var response = responseParser.parse(output);
         ctx.status(SUCCESS_RC).result(response);
       }
     };
@@ -73,8 +72,4 @@ public abstract class JavalinEndpoint<S, T> extends io.dkakunsi.common.Endpoint<
     Context.set(context);
     return context;
   }
-
-  protected abstract ProcessInput<S> parseRequest(String body, Map<String, String> pathParams, Context context);
-
-  protected abstract String parseResponse(ProcessResult<T> result);
 }
