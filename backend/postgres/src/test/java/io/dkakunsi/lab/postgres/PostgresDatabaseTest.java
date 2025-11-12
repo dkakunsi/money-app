@@ -1,4 +1,4 @@
-package io.dkakunsi.lab.database;
+package io.dkakunsi.lab.postgres;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

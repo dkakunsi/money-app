@@ -1,4 +1,4 @@
-package io.dkakunsi.lab.database;
+package io.dkakunsi.lab.postgres;
 
 import java.util.Collection;
 import java.util.List;
