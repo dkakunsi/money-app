@@ -29,6 +29,12 @@
       <version>1.18.26</version>
     </dependency>
 
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.0.2</version> <!-- or latest -->
+    </dependency>
+
     <!-- Test Dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

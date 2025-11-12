@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import io.dkakunsi.common.Id;
 import io.dkakunsi.common.Process;
+import io.dkakunsi.common.ProcessError;
 import io.dkakunsi.common.ProcessInput;
 import io.dkakunsi.common.ProcessResult;
 import io.dkakunsi.money.account.model.Account;
@@ -27,7 +28,7 @@ public final class CreateAccountProcess implements Process<CreateAccountInput, A
     final var account = Account.builder()
         .id(Id.generate())
         .name(input.data().name())
-        .type(Account.Type.valueOf(input.data().type()))
+        .type(input.data().type())
         .themeColor(input.data().themeColor())
         .user(user)
         .balance(BigDecimal.ZERO)
@@ -36,7 +37,12 @@ public final class CreateAccountProcess implements Process<CreateAccountInput, A
         .createdBy(executor)
         .updatedBy(executor)
         .build();
-    var result = this.accountRepository.create(account);
-    return ProcessResult.success(result);
+
+    try {
+      var result = this.accountRepository.create(account);
+      return ProcessResult.success(result);
+    } catch (Exception e) {
+      return ProcessResult.failure(ProcessError.Code.SERVER_ERROR, e.getMessage());
+    }
   }
 }

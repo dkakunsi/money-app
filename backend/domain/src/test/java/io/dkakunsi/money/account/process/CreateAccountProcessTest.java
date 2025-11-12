@@ -1,6 +1,7 @@
 package io.dkakunsi.money.account.process;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,7 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.dkakunsi.common.Context;
+import io.dkakunsi.common.ProcessError;
 import io.dkakunsi.common.ProcessInput;
+import io.dkakunsi.money.account.model.Account;
 import io.dkakunsi.money.account.port.AccountPort;
 
 public final class CreateAccountProcessTest {
@@ -36,7 +39,7 @@ public final class CreateAccountProcessTest {
     final var requester = "Requester";
     final var createRequest = CreateAccountInput.builder()
         .name("Savings Account")
-        .type("BANK")
+        .type(Account.Type.BANK)
         .themeColor("#FF5733")
         .build();
     final var context = mock(Context.class);
@@ -55,13 +58,13 @@ public final class CreateAccountProcessTest {
     final var data = result.data().get();
     assertNotNull(data.getId());
     assertEquals(createRequest.name(), data.getName());
-    assertEquals(createRequest.type(), data.getType().name());
+    assertEquals(createRequest.type(), data.getType());
     assertEquals(createRequest.themeColor(), data.getThemeColor());
     assertEquals(BigDecimal.ZERO, data.getBalance());
 
     verify(accountRepository).create(argThat(saved -> {
       return createRequest.name().equals(saved.getName())
-          && createRequest.type().equals(saved.getType().name())
+          && createRequest.type().equals(saved.getType())
           && createRequest.themeColor().equals(saved.getThemeColor())
           && BigDecimal.ZERO.equals(saved.getBalance())
           && saved.getId() != null
@@ -70,5 +73,31 @@ public final class CreateAccountProcessTest {
           && requester.equals(saved.getCreatedBy())
           && requester.equals(saved.getUpdatedBy());
     }));
+  }
+
+  @Test
+  void givenValidInsertAccountRequestWhenAccountPortThrowAnExceptionThenShouldFail() {
+    // Given
+    final var requester = "Requester";
+    final var createRequest = CreateAccountInput.builder()
+        .name("Savings Account")
+        .type(Account.Type.BANK)
+        .themeColor("#FF5733")
+        .build();
+    final var context = mock(Context.class);
+    final var input = new ProcessInput<>(createRequest, context);
+
+    when(context.requester()).thenReturn(requester);
+    when(accountRepository.create(any())).thenThrow(new RuntimeException("An error occurred"));
+
+    // When
+    final var result = underTest.process(input);
+
+    // Then
+    assertFalse(result.isSuccess());
+
+    final var error = result.error().get();
+    assertEquals(ProcessError.Code.SERVER_ERROR, error.code());
+    assertEquals("An error occurred", error.message());
   }
 }
