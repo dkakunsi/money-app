@@ -39,7 +39,7 @@ public final class RegisterUserProcessTest {
   }
 
   @Test
-  public void givenValidRegisterUserRequestWhenUserIsNotExistsTnShouldSuccessAndCreateUser() {
+  public void givenValidRegisterUserRequestWhenUserIsNotExistsThenShouldCreateUserAndSuccess() {
     // Given
     var email = "user@email.com";
     var username = "User Name";
@@ -86,7 +86,7 @@ public final class RegisterUserProcessTest {
   }
 
   @Test
-  public void givenValidRegisterUserRequestWhenUserExistsThenShouldSuccessAndUpdateUser() {
+  public void givenValidRegisterUserRequestWhenUserExistsThenShouldUpdateUserAndSuccess() {
     // Given
     var existingId = "existing-id";
     var existingUsername = "User Name";
@@ -143,7 +143,7 @@ public final class RegisterUserProcessTest {
   }
 
   @Test
-  public void givenValidRegisterUserRequestWhenUserExistsWithNoChangesThenShouldSuccessAndNotSave() {
+  public void givenValidRegisterUserRequestWhenUserExistsWithNoChangesThenShouldNotSaveAndSuccess() {
     // Given
     var existingId = "existing-id";
     var username = "User Name";
@@ -191,7 +191,7 @@ public final class RegisterUserProcessTest {
   }
 
   @Test
-  public void givenValidRegisterUserRequestWhenPortThrowsErrorThenReturnFailure() {
+  public void givenValidRegisterUserRequestWhenPortThrowsErrorThenShouldFail() {
     // Given
     when(userPort.save(any())).thenThrow(new RuntimeException("An error occured"));
 
