@@ -22,14 +22,24 @@ public final class CreateAccountProcess implements Process<CreateAccountInput, A
 
   @Override
   public ProcessResult<Account> process(ProcessInput<CreateAccountInput> input) {
-    final var user = User.builder().id(input.data().user()).build();
+    final var account = toModel(input.data(), input.activeUser(), input.requester());
+    try {
+      var result = this.accountRepository.create(account);
+      return ProcessResult.success(result);
+    } catch (Exception e) {
+      return ProcessResult.failure(ProcessError.Code.SERVER_ERROR, e.getMessage());
+    }
+  }
+
+  private static Account toModel(CreateAccountInput input, String activeUser, String requester) {
+    final var user = User.builder().id(Id.of(activeUser)).build();
     final var now = LocalDateTime.now();
-    final var executor = input.requester();
-    final var account = Account.builder()
+    final var executor = requester;
+    return Account.builder()
         .id(Id.generate())
-        .name(input.data().name())
-        .type(input.data().type())
-        .themeColor(input.data().themeColor())
+        .name(input.name())
+        .type(input.type())
+        .themeColor(input.themeColor())
         .user(user)
         .balance(BigDecimal.ZERO)
         .createdAt(now)
@@ -37,12 +47,5 @@ public final class CreateAccountProcess implements Process<CreateAccountInput, A
         .createdBy(executor)
         .updatedBy(executor)
         .build();
-
-    try {
-      var result = this.accountRepository.create(account);
-      return ProcessResult.success(result);
-    } catch (Exception e) {
-      return ProcessResult.failure(ProcessError.Code.SERVER_ERROR, e.getMessage());
-    }
   }
 }
