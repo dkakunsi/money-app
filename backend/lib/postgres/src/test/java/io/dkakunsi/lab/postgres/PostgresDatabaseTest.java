@@ -75,18 +75,18 @@ class PostgresDatabaseTest {
     doReturn("domain").when(schema).getName();
     doReturn(List.of(new Index("id", true), new Index("code", true))).when(schema).getIndexes();
 
-    new PostgresDatabaseInit(config).initDatabase(List.of(schema));
     database = PostgresDatabase.<TestObject>builder()
-        .executor(new PostgresDatabaseExecutor(config))
+        .config(config)
         .schema(schema)
         .entityParser(Parser::parseEntity)
         .resultParser(Parser::parseResult)
         .build();
+    database.initTable();
   }
 
   @AfterEach
   void tearDown() {
-    new PostgresDatabaseExecutor(config).executeUpdate("DELETE FROM public.domain WHERE 1=1");
+    new PostgresQueryExecutor(config).executeUpdate("DELETE FROM public.domain WHERE 1=1");
   }
 
   @Test

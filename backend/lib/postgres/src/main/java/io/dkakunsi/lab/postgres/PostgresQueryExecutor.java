@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import io.dkakunsi.lab.common.Prototype;
 import io.dkakunsi.lab.common.data.Entity;
 import io.dkakunsi.lab.common.data.ResultParser;
 
@@ -15,19 +16,15 @@ import io.dkakunsi.lab.common.data.ResultParser;
  *
  * @author dkakunsi
  */
-final class PostgresDatabaseExecutor {
+final class PostgresQueryExecutor implements Prototype {
 
   private PostgresConfig config;
 
   private DataSource dataSource;
 
-  PostgresDatabaseExecutor(PostgresConfig config) {
+  PostgresQueryExecutor(PostgresConfig config) {
     this.config = config;
     this.dataSource = config.getDataSource();
-  }
-
-  public String getTableName(String domain) {
-    return config.getDatabaseSchema() + "." + domain;
   }
 
   void executeUpdate(String query) {
@@ -72,5 +69,10 @@ final class PostgresDatabaseExecutor {
     } catch (SQLException ex) {
       throw new RuntimeException(ex);
     }
+  }
+
+  @Override
+  public PostgresQueryExecutor copy() {
+    return new PostgresQueryExecutor(this.config);
   }
 }
