@@ -7,7 +7,8 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import io.dkakunsi.lab.common.data.EntityParser;
+import io.dkakunsi.lab.common.data.Entity;
+import io.dkakunsi.lab.common.data.ResultParser;
 
 /**
  * Root class of mongo repository implementation.
@@ -42,7 +43,7 @@ final class PostgresDatabaseExecutor {
     }
   }
 
-  <T> Optional<T> executeSingleResultQuery(String query, EntityParser<T> parser) {
+  <T extends Entity> Optional<T> executeSingleResultQuery(String query, ResultParser<T> parser) {
     try (
         var connection = dataSource.getConnection();
         var statement = connection.createStatement()) {
@@ -57,7 +58,7 @@ final class PostgresDatabaseExecutor {
     }
   }
 
-  <T> List<T> executeListResultQuery(String query, EntityParser<T> parser) {
+  <T extends Entity> List<T> executeListResultQuery(String query, ResultParser<T> parser) {
     try (
         var connection = dataSource.getConnection();
         var statement = connection.createStatement()) {

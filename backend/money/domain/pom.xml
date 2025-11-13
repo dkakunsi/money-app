@@ -14,7 +14,7 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Dkakunsi Lab :: Money :: Domain</name>
+  <name>Dkakunsi Lab :: Money App :: Domain Module</name>
 
   <dependencies>
     <dependency>

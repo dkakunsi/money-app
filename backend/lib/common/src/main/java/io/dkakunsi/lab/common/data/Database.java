@@ -7,33 +7,26 @@ import io.dkakunsi.lab.common.Id;
 import io.dkakunsi.lab.common.Prototype;
 import io.dkakunsi.lab.common.data.Query.Criteria;
 
-/**
- *
- * @author dkakunsi
- */
-public interface Database<T extends Entity> extends Prototype {
+public abstract class Database<T extends Entity> implements Prototype {
+  protected EntityParser<T> entityParser;
+  protected ResultParser<T> resultParser;
 
-  default Schema getSchema() {
-    throw new RuntimeException("Not implemented yet");
+  protected Database(
+      EntityParser<T> entityParser,
+      ResultParser<T> resultParser) {
+    this.entityParser = entityParser;
+    this.resultParser = resultParser;
   }
 
-  default T save(T T) {
-    throw new RuntimeException("Not implemented yet");
-  }
+  public abstract Schema getSchema();
 
-  default void delete(Id id) {
-    throw new RuntimeException("Not implemented yet");
-  }
+  public abstract T save(T T);
 
-  default Optional<T> get(Id id) {
-    throw new RuntimeException("Not implemented yet");
-  }
+  public abstract void delete(Id id);
 
-  default List<T> get(String field, Object key) {
-    throw new RuntimeException("Not implemented yet");
-  }
+  public abstract Optional<T> get(Id id);
 
-  default List<T> search(List<Criteria> criteria) {
-    throw new RuntimeException("Not implemented yet");
-  }
+  public abstract List<T> get(String field, Object key);
+
+  public abstract List<T> search(List<Criteria> criteria);
 }

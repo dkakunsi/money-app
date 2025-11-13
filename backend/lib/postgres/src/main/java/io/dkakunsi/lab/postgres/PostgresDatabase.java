@@ -9,6 +9,7 @@ import io.dkakunsi.lab.common.data.Entity;
 import io.dkakunsi.lab.common.data.EntityParser;
 import io.dkakunsi.lab.common.data.Query.Criteria;
 import io.dkakunsi.lab.common.data.Query.Criteria.Operator;
+import io.dkakunsi.lab.common.data.ResultParser;
 import io.dkakunsi.lab.common.data.Schema;
 import lombok.Builder;
 
@@ -17,14 +18,27 @@ import lombok.Builder;
  *
  * @author dkakunsi
  */
-@Builder
-public class PostgresDatabase<T extends Entity> implements Database<T> {
+public class PostgresDatabase<T extends Entity> extends Database<T> {
 
   protected PostgresDatabaseExecutor executor;
 
   protected Schema schema;
 
-  protected EntityParser<T> parser;
+  @Builder
+  public PostgresDatabase(
+      PostgresDatabaseExecutor executor,
+      Schema schema,
+      EntityParser<T> entityParser,
+      ResultParser<T> resultParser) {
+    super(entityParser, resultParser);
+    this.executor = executor;
+    this.schema = schema;
+  }
+
+  @Override
+  public Schema getSchema() {
+    return schema;
+  }
 
   private String getTableName() {
     return executor.getTableName(schema.getName());
@@ -35,14 +49,15 @@ public class PostgresDatabase<T extends Entity> implements Database<T> {
     return PostgresDatabase.<T>builder()
         .executor(this.executor)
         .schema(this.schema)
-        .parser(this.parser)
+        .entityParser(this.entityParser)
+        .resultParser(this.resultParser)
         .build();
   }
 
   @Override
   public T save(T entity) {
     schema.validate(entity.toString());
-    var query = Dml.upsert(getTableName(), entity);
+    var query = Dml.upsert(getTableName(), entity.getId(), entityParser.parse(entity));
     executor.executeUpdate(query);
     return entity;
   }
@@ -56,19 +71,19 @@ public class PostgresDatabase<T extends Entity> implements Database<T> {
   @Override
   public Optional<T> get(Id id) {
     var query = Dml.selectById(getTableName(), id);
-    return executor.executeSingleResultQuery(query, parser);
+    return executor.executeSingleResultQuery(query, resultParser);
   }
 
   @Override
   public List<T> get(String field, Object value) {
     var query = Dml.selectByField(getTableName(), field, value);
-    return executor.executeListResultQuery(query, parser);
+    return executor.executeListResultQuery(query, resultParser);
   }
 
   @Override
   public List<T> search(List<Criteria> criteria) {
     var searchQuery = Dml.selectByCriteria(getTableName(), criteria);
-    return executor.executeListResultQuery(searchQuery, parser);
+    return executor.executeListResultQuery(searchQuery, resultParser);
   }
 
   private static class Dml {
@@ -104,9 +119,7 @@ public class PostgresDatabase<T extends Entity> implements Database<T> {
           WHERE %s
         """;
 
-    public static <T extends Entity> String upsert(String tableName, T entity) {
-      var id = entity.getId();
-      var data = entity.toData();
+    public static <T extends Entity> String upsert(String tableName, Id id, String data) {
       return UPSERT.formatted(tableName, id.value(), data, data);
     }
 
