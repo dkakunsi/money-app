@@ -439,5 +439,6 @@
     <module>postgres</module>
     <module>javalin</module>
     <module>app</module>
+    <module>json</module>
   </modules>
 </project>
