@@ -56,17 +56,6 @@
 
   <repositories>
     <repository>
-      <id>bitapp</id>
-      <url>https://maven.pkg.github.com/dkakunsi/money</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
-    <repository>
       <id>lab</id>
       <url>https://maven.pkg.github.com/dkakunsi/lab</url>
       <releases>
@@ -81,15 +70,15 @@
 
   <distributionManagement>
     <repository>
-      <id>bitapp</id>
-      <url>https://maven.pkg.github.com/dkakunsi/money</url>
+      <id>lab</id>
+      <url>https://maven.pkg.github.com/dkakunsi/lab</url>
       <releases>
         <enabled>true</enabled>
       </releases>
     </repository>
     <snapshotRepository>
-      <id>bitapp</id>
-      <url>https://maven.pkg.github.com/dkakunsi/money</url>
+      <id>lab</id>
+      <url>https://maven.pkg.github.com/dkakunsi/lab</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>

@@ -1,0 +1,90 @@
+metadata:
+  name: ${service.name}
+  namespace: ${solution.name}
+  labels:
+    app: ${service.name}
+spec:
+  replicas: ${replicas.count}
+  selector:
+    matchLabels:
+      app: ${service.name}
+  template:
+    metadata:
+      labels:
+        app: ${service.name}
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: ${service.name}-githubcred
+      containers:
+        - name: ${service.name}
+          image: ${docker.image}:${docker.tag}
+          imagePullPolicy: IfNotPresent
+          command: ["java"]
+          args: ["-Duser.timezone=Asia/Makassar", "-jar", "app.jar"]
+          ports:
+            - containerPort: 2000
+          env:
+            - name: postgres.host
+              valueFrom:
+                configMapKeyRef:
+                  name: ${service.name}
+                  key: postgres.host
+            - name: postgres.port
+              valueFrom:
+                configMapKeyRef:
+                  name: ${service.name}
+                  key: postgres.port
+            - name: postgres.dbname
+              valueFrom:
+                configMapKeyRef:
+                  name: ${service.name}
+                  key: postgres.dbname
+            - name: postgres.schema
+              valueFrom:
+                configMapKeyRef:
+                  name: ${service.name}
+                  key: postgres.schema
+            - name: postgres.username
+              valueFrom:
+                secretKeyRef:
+                  name: ${service.name}
+                  key: postgres.username
+            - name: postgres.password
+              valueFrom:
+                secretKeyRef:
+                  name: ${service.name}
+                  key: postgres.password
+            - name: schema
+              valueFrom:
+                configMapKeyRef:
+                  name: ${service.name}
+                  key: schema
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: ${service.name}
+                  key: otel.otlpExporterEndpoint
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 2000
+            initialDelaySeconds: ${probes.liveness.initialDelay}
+            periodSeconds: ${probes.liveness.period}
+            failureThreshold: ${probes.liveness.failureThreshold}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 2000
+            initialDelaySeconds: ${probes.readiness.initialDelay}
+            periodSeconds: ${probes.readiness.period}
+            failureThreshold: ${probes.readiness.failureThreshold}
+          resources:
+            limits:
+              cpu: ${resources.cpu.limit}
+              memory: ${resources.memory.limit}
+              ephemeral-storage: ${resources.storage.limit}
+            requests:
+              cpu: ${resources.cpu.request}
+              memory: ${resources.memory.request}
+              ephemeral-storage: ${resources.storage.request}

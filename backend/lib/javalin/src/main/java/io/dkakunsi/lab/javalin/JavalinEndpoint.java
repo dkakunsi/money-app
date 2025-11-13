@@ -8,13 +8,18 @@ import io.dkakunsi.lab.common.web.ResponseParser;
 import io.javalin.http.Handler;
 import io.javalin.http.HandlerType;
 import io.javalin.http.UnauthorizedResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 public class JavalinEndpoint<S, T> extends io.dkakunsi.lab.common.web.Endpoint<S, T> {
 
   @Builder
-  public JavalinEndpoint(io.dkakunsi.lab.common.process.Process<S, T> process, Method method, String path,
-      RequestParser<S> requestParser, ResponseParser<T> responseParser, Authorizer authorizer) {
+  public JavalinEndpoint(@NotNull io.dkakunsi.lab.common.process.Process<S, T> process,
+      @NotNull Method method,
+      @NotNull String path,
+      @NotNull RequestParser<S> requestParser,
+      @NotNull ResponseParser<T> responseParser,
+      Authorizer authorizer) {
     super(process, method, path, requestParser, responseParser, authorizer);
   }
 
