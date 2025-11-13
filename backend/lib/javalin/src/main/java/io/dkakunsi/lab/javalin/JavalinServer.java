@@ -26,13 +26,17 @@ public final class JavalinServer {
   @SuppressWarnings("rawtypes")
   private List<JavalinEndpoint> endpoints;
 
-  public JavalinServer(int port) {
+  private JavalinServer(int port) {
     this.port = port;
     endpoints = new ArrayList<>();
   }
 
-  public JavalinServer() {
-    this(8080);
+  public static JavalinServer of(int port) {
+    return new JavalinServer(port);
+  }
+
+  public static JavalinServer of() {
+    return of(8080);
   }
 
   public <S, T> JavalinServer addEndpoint(JavalinEndpoint<S, T> endpoint) {
@@ -40,11 +44,13 @@ public final class JavalinServer {
     return this;
   }
 
-  public void start() {
+  public JavalinServer start() {
     app = Javalin.create(getConfigurer()).start(port);
 
     initEndpoint();
     initExceptionHandling();
+
+    return this;
   }
 
   public void stop() {

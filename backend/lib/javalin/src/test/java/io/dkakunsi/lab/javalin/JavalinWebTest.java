@@ -76,7 +76,7 @@ class JavalinWebTest {
         .authorizer(authorizer)
         .build();
 
-    server = new JavalinServer(20000);
+    server = JavalinServer.of(20000);
     server.addEndpoint(postEndpoint).addEndpoint(putEndpoint);
     server.start();
   }

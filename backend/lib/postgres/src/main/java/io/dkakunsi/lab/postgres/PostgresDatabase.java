@@ -147,8 +147,9 @@ public final class PostgresDatabase<T extends Entity> extends Database<T> {
 
   @Override
   public T save(T entity) {
-    schema.validate(entity.toString());
-    var query = Dml.upsert(getTableName(), entity.getId(), entityParser.parse(entity));
+    var data = entityParser.parse(entity);
+    schema.validate(data);
+    var query = Dml.upsert(getTableName(), entity.getId(), data);
     executor.executeUpdate(query);
     return entity;
   }

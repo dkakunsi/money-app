@@ -29,6 +29,8 @@ public final class RegisterUserProcess implements Process<RegisterUserInput, Use
         user = existingUser.get();
       }
       return ProcessResult.success(user);
+    } catch (IllegalArgumentException e) {
+      return ProcessResult.failure(ProcessError.Code.BAD_REQUEST, e.getMessage());
     } catch (Exception e) {
       return ProcessResult.failure(ProcessError.Code.SERVER_ERROR, e.getMessage());
     }

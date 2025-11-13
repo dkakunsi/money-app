@@ -7,7 +7,7 @@ import lombok.Getter;
 public final record ProcessError(@NotNull Code code, @NotBlank String message) {
   @Getter
   public static enum Code {
-    SERVER_ERROR(500),;
+    SERVER_ERROR(500), BAD_REQUEST(400);
 
     private int httpCode;
 

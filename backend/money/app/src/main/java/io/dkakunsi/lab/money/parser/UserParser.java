@@ -49,7 +49,7 @@ public class UserParser {
   public static String toResponse(ProcessResult<User> result) {
     var user = result.data().get();
     var json = new JSONObject();
-    json.put("id", user.getId().value());
+    json.put("email", user.getId().value());
     json.put("name", user.getName());
     json.put("language", user.getLanguage());
     json.put("phone", user.getPhone());

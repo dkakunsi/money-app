@@ -84,7 +84,7 @@ public final class JSONSchema implements Schema {
     var failure = validator.validate(instance);
     if (failure != null) {
       LOGGER.error("Invalid json data. {}", failure.toString());
-      throw new IllegalArgumentException("Invalid json data");
+      throw new IllegalArgumentException("Invalid data");
     }
   }
 

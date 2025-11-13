@@ -55,7 +55,7 @@ public final class User {
 
   public static User createNew(RegisterUserInput userInput) {
     return User.builder()
-        .id(Id.generate())
+        .id(Id.of(userInput.email()))
         .name(userInput.name())
         .phone(userInput.phone())
         .photoUrl(userInput.photoUrl())
