@@ -78,4 +78,39 @@ public class RegisterUserTest {
     assertEquals(400, response.getStatus());
     assertEquals("Invalid data", response.getBody());
   }
+
+  @Test
+  public void givenValidRegisterRequest_WhenThePhoneNoIsDuplicated_ThenShouldFailWithBadRequest() {
+    var body = """
+        {
+          "name": "John Doe",
+          "email": "john.doe@example.com",
+          "phone": "1234567890",
+          "photoUrl": "http://example.com/photo.jpg"
+        }
+        """;
+    var response = Unirest.post(BASE_URL + "/users").body(body).asString();
+
+    assertEquals(200, response.getStatus());
+
+    var responseBody = new JSONObject(response.getBody());
+    assertEquals("John Doe", responseBody.getString("name"));
+    assertEquals("john.doe@example.com", responseBody.getString("email"));
+    assertEquals("1234567890", responseBody.getString("phone"));
+    assertEquals("http://example.com/photo.jpg", responseBody.getString("photoUrl"));
+    assertEquals("EN", responseBody.getString("language"));
+
+    var body2 = """
+        {
+          "name": "Alicia Key",
+          "email": "alice@example.com",
+          "phone": "1234567890",
+          "photoUrl": "http://example.com/photo.jpg"
+        }
+        """;
+    var response2 = Unirest.post(BASE_URL + "/users").body(body2).asString();
+
+    assertEquals(400, response2.getStatus());
+    assertEquals("Key is duplicated", response2.getBody());
+  }
 }
