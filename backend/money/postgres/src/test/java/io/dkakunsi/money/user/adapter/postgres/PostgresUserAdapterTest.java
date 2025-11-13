@@ -16,9 +16,9 @@ import io.dkakunsi.lab.common.Id;
 import io.dkakunsi.lab.postgres.PostgresDatabase;
 import io.dkakunsi.money.user.model.User;
 
-public class UserPostgresAdapterTest {
+public class PostgresUserAdapterTest {
 
-  private UserPostgresAdapter undetTest;
+  private PostgresUserAdapter undetTest;
 
   private PostgresDatabase<UserEntity> database;
 
@@ -26,7 +26,7 @@ public class UserPostgresAdapterTest {
   @BeforeEach
   void setUp() {
     database = (PostgresDatabase<UserEntity>) mock(PostgresDatabase.class);
-    undetTest = new UserPostgresAdapter(database);
+    undetTest = new PostgresUserAdapter(database);
   }
 
   @Test

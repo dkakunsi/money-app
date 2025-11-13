@@ -7,11 +7,11 @@ import io.dkakunsi.lab.postgres.PostgresDatabase;
 import io.dkakunsi.money.user.model.User;
 import io.dkakunsi.money.user.port.UserPort;
 
-public final class UserPostgresAdapter implements UserPort {
+public final class PostgresUserAdapter implements UserPort {
 
   private PostgresDatabase<UserEntity> database;
 
-  public UserPostgresAdapter(PostgresDatabase<UserEntity> database) {
+  public PostgresUserAdapter(PostgresDatabase<UserEntity> database) {
     this.database = database;
   }
 
