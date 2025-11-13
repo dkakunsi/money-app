@@ -14,7 +14,7 @@
   <artifactId>postgres</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>PostgreSQL Database Library</name>
+  <name>Dkakunsi Lab :: PostgreSQL Database Library</name>
 
   <properties>
     <postgres.version>42.7.7</postgres.version>
@@ -28,11 +28,6 @@
     <dependency>
       <groupId>io.dkakunsi.lab</groupId>
       <artifactId>common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dkakunsi.money</groupId>
-      <artifactId>domain</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
