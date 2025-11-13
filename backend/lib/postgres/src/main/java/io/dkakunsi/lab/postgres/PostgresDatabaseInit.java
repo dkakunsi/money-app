@@ -26,11 +26,11 @@ public final class PostgresDatabaseInit {
     schemas.forEach(this::initTable);
   }
 
-  public void initTable(Schema schema) {
+  private void initTable(Schema schema) {
     LOGGER.debug("Initializing table '{}.{}'", databaseSchema, schema.getName());
     var tableName = databaseSchema + "." + schema.getName();
     createTable(tableName);
-    addIndex(tableName, schema.getIndexes());
+    createIndex(tableName, schema.getIndexes());
   }
 
   private void createTable(String tableName) {
@@ -39,7 +39,7 @@ public final class PostgresDatabaseInit {
     executor.executeUpdate(query);
   }
 
-  private void addIndex(String tableName, List<Index> indexes) {
+  private void createIndex(String tableName, List<Index> indexes) {
     LOGGER.debug("Adding index for table '{}': '{}'", tableName, indexes.size());
     indexes.forEach(i -> {
       LOGGER.debug("Creating index on '{}.{}'", tableName, i.getField());
