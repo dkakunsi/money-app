@@ -295,6 +295,6 @@ public class JSONSchemaTest {
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
         () -> customerSchema.validate(entity.toString()));
-    assertTrue(exception.getMessage().contains("Invalid json data"));
+    assertTrue(exception.getMessage().contains("Invalid data"));
   }
 }
