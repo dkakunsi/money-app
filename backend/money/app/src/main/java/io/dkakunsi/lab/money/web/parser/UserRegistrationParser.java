@@ -10,8 +10,8 @@ import io.dkakunsi.lab.common.process.ProcessResult;
 import io.dkakunsi.money.user.model.User;
 import io.dkakunsi.money.user.process.RegisterUserInput;
 
-public class UserParser {
-  public static ProcessInput<RegisterUserInput> fromRequest(String body, Map<String, String> pathParams,
+public class UserRegistrationParser {
+  public static ProcessInput<RegisterUserInput> parseRequest(String body, Map<String, String> pathParams,
       Context context) {
     var json = new JSONObject(body);
     var userInput = RegisterUserInput.builder()
@@ -23,7 +23,7 @@ public class UserParser {
     return new ProcessInput<>(userInput, context);
   }
 
-  public static String toResponse(ProcessResult<User> result) {
+  public static String parseResponse(ProcessResult<User> result) {
     var user = result.data().get();
     var json = new JSONObject();
     json.put("email", user.getId().value());

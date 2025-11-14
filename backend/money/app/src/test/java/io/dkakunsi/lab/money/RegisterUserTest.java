@@ -51,16 +51,24 @@ public class RegisterUserTest {
           "photoUrl": "http://example.com/photo.jpg"
         }
         """;
-    var response = Unirest.post(BASE_URL + "/users").body(body).asString();
 
-    assertEquals(200, response.getStatus());
+    var postResponse = Unirest.post(BASE_URL + "/users").body(body).asString();
+    assertEquals(200, postResponse.getStatus());
+    var postResponseBody = new JSONObject(postResponse.getBody());
+    assertEquals("John Doe", postResponseBody.getString("name"));
+    assertEquals("john.doe@example.com", postResponseBody.getString("email"));
+    assertEquals("1234567890", postResponseBody.getString("phone"));
+    assertEquals("http://example.com/photo.jpg", postResponseBody.getString("photoUrl"));
+    assertEquals("EN", postResponseBody.getString("language"));
 
-    var responseBody = new JSONObject(response.getBody());
-    assertEquals("John Doe", responseBody.getString("name"));
-    assertEquals("john.doe@example.com", responseBody.getString("email"));
-    assertEquals("1234567890", responseBody.getString("phone"));
-    assertEquals("http://example.com/photo.jpg", responseBody.getString("photoUrl"));
-    assertEquals("EN", responseBody.getString("language"));
+    var getResponse = Unirest.get(BASE_URL + "/user/john.doe@example.com").asString();
+    assertEquals(200, getResponse.getStatus());
+    var getResponseBody = new JSONObject(getResponse.getBody());
+    assertEquals("John Doe", getResponseBody.getString("name"));
+    assertEquals("john.doe@example.com", getResponseBody.getString("email"));
+    assertEquals("1234567890", getResponseBody.getString("phone"));
+    assertEquals("http://example.com/photo.jpg", getResponseBody.getString("photoUrl"));
+    assertEquals("EN", getResponseBody.getString("language"));
   }
 
   @Test
