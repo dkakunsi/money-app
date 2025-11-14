@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.github.cdimascio.dotenv.Dotenv;
 import kong.unirest.Unirest;
 
-public class RegisterUserTest {
+public class UserRegistrationTest {
 
   private static final String BASE_URL = "http://localhost:20000";
 

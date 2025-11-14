@@ -14,8 +14,8 @@ import io.dkakunsi.lab.postgres.PostgresDatabase;
 import io.dkakunsi.money.user.adapter.postgres.PostgresUserAdapter;
 import io.dkakunsi.money.user.adapter.postgres.UserEntity;
 import io.dkakunsi.money.user.model.User;
-import io.dkakunsi.money.user.process.RegisterUserInput;
-import io.dkakunsi.money.user.process.RegisterUserProcess;
+import io.dkakunsi.money.user.process.UserRegistrationInput;
+import io.dkakunsi.money.user.process.UserRegistrationProcess;
 import io.dkakunsi.money.user.process.UserRetrievalInput;
 import io.dkakunsi.money.user.process.UserRetrievalProcess;
 
@@ -49,9 +49,9 @@ public final class Launcher {
         .start();
   }
 
-  private JavalinEndpoint<RegisterUserInput, User> registerUserEndpoint(PostgresUserAdapter userAdapter) {
-    var registerUserProcess = new RegisterUserProcess(userAdapter);
-    return JavalinEndpoint.<RegisterUserInput, User>builder()
+  private JavalinEndpoint<UserRegistrationInput, User> registerUserEndpoint(PostgresUserAdapter userAdapter) {
+    var registerUserProcess = new UserRegistrationProcess(userAdapter);
+    return JavalinEndpoint.<UserRegistrationInput, User>builder()
         .process(registerUserProcess)
         .path("/users")
         .method(Method.POST)

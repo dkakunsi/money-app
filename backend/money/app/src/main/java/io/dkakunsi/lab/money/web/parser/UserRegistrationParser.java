@@ -8,13 +8,13 @@ import io.dkakunsi.lab.common.Context;
 import io.dkakunsi.lab.common.process.ProcessInput;
 import io.dkakunsi.lab.common.process.ProcessResult;
 import io.dkakunsi.money.user.model.User;
-import io.dkakunsi.money.user.process.RegisterUserInput;
+import io.dkakunsi.money.user.process.UserRegistrationInput;
 
 public class UserRegistrationParser {
-  public static ProcessInput<RegisterUserInput> parseRequest(String body, Map<String, String> pathParams,
+  public static ProcessInput<UserRegistrationInput> parseRequest(String body, Map<String, String> pathParams,
       Context context) {
     var json = new JSONObject(body);
-    var userInput = RegisterUserInput.builder()
+    var userInput = UserRegistrationInput.builder()
         .name(json.getString("name"))
         .email(json.getString("email"))
         .phone(json.optString("phone", null))

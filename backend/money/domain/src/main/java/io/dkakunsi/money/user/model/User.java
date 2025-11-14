@@ -3,7 +3,7 @@ package io.dkakunsi.money.user.model;
 import java.util.Objects;
 
 import io.dkakunsi.lab.common.Id;
-import io.dkakunsi.money.user.process.RegisterUserInput;
+import io.dkakunsi.money.user.process.UserRegistrationInput;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -40,20 +40,20 @@ public final class User {
     return this;
   }
 
-  public boolean needUpdate(RegisterUserInput userModel) {
+  public boolean needUpdate(UserRegistrationInput userModel) {
     return !Objects.equals(this.name, userModel.name())
         || !Objects.equals(this.phone, userModel.phone())
         || !Objects.equals(this.photoUrl, userModel.photoUrl());
   }
 
-  public User update(RegisterUserInput userInput) {
+  public User update(UserRegistrationInput userInput) {
     this.name = userInput.name();
     this.phone = userInput.phone();
     this.photoUrl = userInput.photoUrl();
     return this;
   }
 
-  public static User createNew(RegisterUserInput userInput) {
+  public static User createNew(UserRegistrationInput userInput) {
     return User.builder()
         .id(Id.of(userInput.email()))
         .name(userInput.name())

@@ -24,9 +24,9 @@ import io.dkakunsi.money.user.model.User;
 import io.dkakunsi.money.user.model.User.Language;
 import io.dkakunsi.money.user.port.UserPort;
 
-public final class RegisterUserProcessTest {
+public final class UserRegistrationProcessTest {
 
-  private RegisterUserProcess underTest;
+  private UserRegistrationProcess underTest;
 
   private UserPort userPort;
 
@@ -35,7 +35,7 @@ public final class RegisterUserProcessTest {
   @BeforeEach
   void setUp() {
     userPort = mock(UserPort.class);
-    underTest = new RegisterUserProcess(userPort);
+    underTest = new UserRegistrationProcess(userPort);
   }
 
   @Test
@@ -45,7 +45,7 @@ public final class RegisterUserProcessTest {
     var username = "User Name";
     var phone = "081234567890";
     var photoUrl = "http://photo.url/user";
-    var registerInput = RegisterUserInput.builder()
+    var registerInput = UserRegistrationInput.builder()
         .email(email)
         .name(username)
         .phone(phone)
@@ -91,7 +91,7 @@ public final class RegisterUserProcessTest {
     var phone = "081234567890";
     var photoUrl = "http://photo.url/user";
     var updatingUserName = "Update User Name";
-    var registerInput = RegisterUserInput.builder()
+    var registerInput = UserRegistrationInput.builder()
         .email(email)
         .name(updatingUserName)
         .phone(phone)
@@ -143,7 +143,7 @@ public final class RegisterUserProcessTest {
     var email = "user@email.com";
     var phone = "081234567890";
     var photoUrl = "http://photo.url/user";
-    var registerInput = RegisterUserInput.builder()
+    var registerInput = UserRegistrationInput.builder()
         .email(email)
         .name(username)
         .phone(phone)
@@ -186,7 +186,7 @@ public final class RegisterUserProcessTest {
     // Given
     when(userPort.save(any())).thenThrow(new RuntimeException("An error occured"));
 
-    var registerInput = RegisterUserInput.builder().build();
+    var registerInput = UserRegistrationInput.builder().build();
     var context = Context.builder().requester(REQUESTER).build();
     var processInput = new ProcessInput<>(registerInput, context);
 

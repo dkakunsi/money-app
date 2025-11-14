@@ -7,17 +7,17 @@ import io.dkakunsi.lab.common.process.ProcessResult;
 import io.dkakunsi.money.user.model.User;
 import io.dkakunsi.money.user.port.UserPort;
 
-public final class RegisterUserProcess implements Process<RegisterUserInput, User> {
+public final class UserRegistrationProcess implements Process<UserRegistrationInput, User> {
 
   private UserPort userPort;
 
-  public RegisterUserProcess(UserPort userPort) {
+  public UserRegistrationProcess(UserPort userPort) {
     this.userPort = userPort;
   }
 
   @Override
   public ProcessResult<User> process(
-      ProcessInput<RegisterUserInput> input) {
+      ProcessInput<UserRegistrationInput> input) {
     try {
       var existingUser = userPort.findByEmail(input.data().email());
       User user;
@@ -36,12 +36,12 @@ public final class RegisterUserProcess implements Process<RegisterUserInput, Use
     }
   }
 
-  private User update(User existingUser, RegisterUserInput userInput) {
+  private User update(User existingUser, UserRegistrationInput userInput) {
     var updatedUser = existingUser.update(userInput);
     return userPort.save(updatedUser);
   }
 
-  private User create(RegisterUserInput userInput) {
+  private User create(UserRegistrationInput userInput) {
     var newUser = User.createNew(userInput);
     return userPort.save(newUser);
   }
