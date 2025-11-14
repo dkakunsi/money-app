@@ -1,4 +1,4 @@
-package io.dkakunsi.lab.money.parser;
+package io.dkakunsi.lab.money.web.parser;
 
 import java.util.Map;
 

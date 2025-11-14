@@ -8,7 +8,7 @@ import io.dkakunsi.lab.common.data.Schema;
 import io.dkakunsi.lab.common.web.Endpoint.Method;
 import io.dkakunsi.lab.javalin.JavalinEndpoint;
 import io.dkakunsi.lab.javalin.JavalinServer;
-import io.dkakunsi.lab.money.parser.UserParser;
+import io.dkakunsi.lab.money.web.parser.UserParser;
 import io.dkakunsi.lab.postgres.PostgresConfig;
 import io.dkakunsi.lab.postgres.PostgresDatabase;
 import io.dkakunsi.money.user.adapter.postgres.PostgresUserAdapter;
