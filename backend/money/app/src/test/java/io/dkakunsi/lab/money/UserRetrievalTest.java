@@ -3,43 +3,11 @@ package io.dkakunsi.lab.money;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.json.JSONObject;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import kong.unirest.Unirest;
 
-public class UserRetrievalTest {
-
-  private static final String BASE_URL = "http://localhost:20000";
-
-  private static EmbedPostgresInstance postgres;
-
-  private static Dotenv dotenv;
-
-  private static Launcher launcher;
-
-  @BeforeAll
-  static void setupServer() throws Exception {
-    postgres = new EmbedPostgresInstance();
-    postgres.start();
-
-    dotenv = Dotenv.configure()
-        .directory("src/test/resources")
-        .filename(".env")
-        .ignoreIfMissing()
-        .load();
-
-    launcher = new Launcher();
-    launcher.launch(dotenv::get);
-  }
-
-  @AfterAll
-  static void stopServer() throws Exception {
-    launcher.stop();
-    postgres.stop();
-  }
+public class UserRetrievalTest extends BaseTest {
 
   @Test
   public void shouldReturnUserData_WhenUserExists() {
