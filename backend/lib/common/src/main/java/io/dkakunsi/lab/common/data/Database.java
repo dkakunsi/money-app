@@ -8,13 +8,10 @@ import io.dkakunsi.lab.common.Prototype;
 import io.dkakunsi.lab.common.data.Query.Criteria;
 
 public abstract class Database<T extends Entity> implements Prototype {
-  protected EntityParser<T> entityParser;
   protected ResultParser<T> resultParser;
 
   protected Database(
-      EntityParser<T> entityParser,
       ResultParser<T> resultParser) {
-    this.entityParser = entityParser;
     this.resultParser = resultParser;
   }
 

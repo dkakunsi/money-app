@@ -8,7 +8,6 @@ import io.dkakunsi.lab.common.Id;
 import io.dkakunsi.lab.common.Logger;
 import io.dkakunsi.lab.common.data.Database;
 import io.dkakunsi.lab.common.data.Entity;
-import io.dkakunsi.lab.common.data.EntityParser;
 import io.dkakunsi.lab.common.data.Query.Criteria;
 import io.dkakunsi.lab.common.data.Query.Criteria.Operator;
 import io.dkakunsi.lab.common.data.ResultParser;
@@ -35,9 +34,8 @@ public final class PostgresDatabase<T extends Entity> extends Database<T> {
   public PostgresDatabase(
       PostgresConfig config,
       Schema schema,
-      EntityParser<T> entityParser,
       ResultParser<T> resultParser) {
-    super(entityParser, resultParser);
+    super(resultParser);
     this.config = config;
     this.schema = schema;
     this.executor = new PostgresQueryExecutor(config);
@@ -57,7 +55,6 @@ public final class PostgresDatabase<T extends Entity> extends Database<T> {
     return PostgresDatabase.<T>builder()
         .config(this.config)
         .schema(this.schema)
-        .entityParser(this.entityParser)
         .resultParser(this.resultParser)
         .build();
   }
@@ -147,7 +144,7 @@ public final class PostgresDatabase<T extends Entity> extends Database<T> {
 
   @Override
   public T save(T entity) {
-    var data = entityParser.parse(entity);
+    var data = entity.toData();
     schema.validate(data);
     var query = Dml.upsert(getTableName(), entity.getId(), data);
     executor.executeUpdate(query);

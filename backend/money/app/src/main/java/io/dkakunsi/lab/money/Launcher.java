@@ -44,8 +44,7 @@ public final class Launcher {
     var postgresUserDb = PostgresDatabase.<UserEntity>builder()
         .config(postgresConfig)
         .schema(schema)
-        .entityParser(UserParser::fromEntity)
-        .resultParser(UserParser::toEntity)
+        .resultParser(UserEntity::from)
         .build();
     postgresUserDb.initTable();
     var userAdapter = new PostgresUserAdapter(postgresUserDb);

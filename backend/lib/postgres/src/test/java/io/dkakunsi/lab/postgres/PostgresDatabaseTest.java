@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,25 +27,6 @@ import io.dkakunsi.lab.common.data.Schema;
 import io.dkakunsi.lab.common.data.Schema.Index;
 
 class PostgresDatabaseTest {
-
-  private static class Parser {
-    public static TestObject parseResult(String data) {
-      var json = new JSONObject(data);
-      return TestObject.builder()
-          .id(Id.of(json.getString("id")))
-          .code(json.getString("code"))
-          .name(json.getString("name"))
-          .build();
-    }
-
-    public static String parseEntity(TestObject entity) {
-      var json = new JSONObject();
-      json.put("id", entity.getId().value());
-      json.put("code", entity.getCode());
-      json.put("name", entity.getName());
-      return json.toString();
-    }
-  }
 
   private static EmbedPostgresInstance postgres;
 
@@ -78,8 +58,7 @@ class PostgresDatabaseTest {
     database = PostgresDatabase.<TestObject>builder()
         .config(config)
         .schema(schema)
-        .entityParser(Parser::parseEntity)
-        .resultParser(Parser::parseResult)
+        .resultParser(TestObject::from)
         .build();
     database.initTable();
   }

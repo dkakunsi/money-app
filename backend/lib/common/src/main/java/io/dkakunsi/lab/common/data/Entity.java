@@ -4,4 +4,6 @@ import io.dkakunsi.lab.common.Id;
 
 public interface Entity {
   Id getId();
+
+  String toData();
 }
