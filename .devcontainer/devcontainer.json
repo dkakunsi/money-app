@@ -5,11 +5,11 @@
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "TARGETARCH": "arm64"
+      "TARGETARCH": "amd64"
     }
   },
   "runArgs": [
-    "--platform=linux/arm64",
+    "--platform=linux/amd64",
     "--privileged",
     "-v",
     "/dev/bus/usb:/dev/bus/usb"
@@ -37,7 +37,7 @@
         "ms-vscode-remote.remote-containers"
       ],
       "settings": {
-        "java.jdt.ls.java.home": "/usr/lib/jvm/temurin-21-jdk-arm64"
+        "java.jdt.ls.java.home": "/usr/lib/jvm/temurin-21-jdk-amd64"
       }
     }
   }

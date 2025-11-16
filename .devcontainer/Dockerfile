@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 ubuntu:24.04
+FROM --platform=linux/amd64 ubuntu:24.04
 
 ## BASIC SETUP
 # Explicitly prevent adding other architectures
@@ -51,7 +51,7 @@ RUN JAVA_DIR=$(ls -d /usr/lib/jvm/temurin-21-jdk-* | head -n 1) && \
     echo "export JAVA_HOME=${JAVA_DIR}" >> /etc/environment && \
     echo "export PATH=\${JAVA_HOME}/bin:\${PATH}" >> /etc/environment
 
-ENV JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-arm64
+ENV JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Install Maven
