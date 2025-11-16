@@ -35,7 +35,10 @@
         "dart-code.dart-code",
         "dart-code.flutter",
         "ms-vscode-remote.remote-containers"
-      ]
+      ],
+      "settings": {
+        "java.jdt.ls.java.home": "/usr/lib/jvm/temurin-21-jdk-arm64"
+      }
     }
   }
   // Features to add to the dev container. More info: https://containers.dev/features.
