@@ -4,6 +4,18 @@ FROM --platform=linux/amd64 ubuntu:24.04
 # Explicitly prevent adding other architectures
 RUN rm -f /etc/dpkg/dpkg.cfg.d/multiarch
 
+# Install locales first
+RUN apt-get update && \
+    apt-get install -y locales && \
+    locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
 # Install basic dependencies
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
