@@ -14,14 +14,14 @@ class EmbedPostgresInstance {
 
   private volatile Connection postgresConnection;
 
-  public void start() throws Exception {
-    epg = pg();
+  public void start(int port) throws Exception {
+    epg = pg(port);
     pgDatabase = epg.getPostgresDatabase();
     postgresConnection = pgDatabase.getConnection();
   }
 
-  private EmbeddedPostgres pg() throws IOException {
-    final EmbeddedPostgres.Builder builder = EmbeddedPostgres.builder().setPort(5432);
+  private EmbeddedPostgres pg(int port) throws IOException {
+    final EmbeddedPostgres.Builder builder = EmbeddedPostgres.builder().setPort(port);
     return builder.start();
   }
 

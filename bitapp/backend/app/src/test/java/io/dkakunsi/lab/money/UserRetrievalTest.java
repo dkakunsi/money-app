@@ -3,11 +3,31 @@ package io.dkakunsi.lab.money;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.json.JSONObject;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import kong.unirest.Unirest;
 
 public class UserRetrievalTest extends BaseTest {
+  private static Servers servers;
+
+  private static String baseUrl;
+
+  @BeforeAll
+  static void setup() throws Exception {
+    servers = getServers();
+    servers.setEnv(POSTGRES_PORT, "5001");
+    servers.setEnv(APP_PORT, "6001");
+    servers.start();
+
+    baseUrl = servers.getBaseUrl();
+  }
+
+  @AfterAll
+  static void tearDown() throws Exception {
+    servers.stop();
+  }
 
   @Test
   public void shouldReturnUserData_WhenUserExists() {
@@ -20,7 +40,7 @@ public class UserRetrievalTest extends BaseTest {
         }
         """;
 
-    var postResponse = Unirest.post(BASE_URL + "/users").body(body).asString();
+    var postResponse = Unirest.post(baseUrl + "/users").body(body).asString();
     assertEquals(200, postResponse.getStatus());
     var postResponseBody = new JSONObject(postResponse.getBody());
     assertEquals("John Doe", postResponseBody.getString("name"));
@@ -29,7 +49,7 @@ public class UserRetrievalTest extends BaseTest {
     assertEquals("http://example.com/photo.jpg", postResponseBody.getString("photoUrl"));
     assertEquals("EN", postResponseBody.getString("language"));
 
-    var getResponse = Unirest.get(BASE_URL + "/user/john.doe@example.com").asString();
+    var getResponse = Unirest.get(baseUrl + "/user/john.doe@example.com").asString();
     assertEquals(200, getResponse.getStatus());
     var getResponseBody = new JSONObject(getResponse.getBody());
     assertEquals("John Doe", getResponseBody.getString("name"));
@@ -41,7 +61,7 @@ public class UserRetrievalTest extends BaseTest {
 
   @Test
   public void shouldReturnEmpty_WhenUserNotExists() {
-    var getResponse = Unirest.get(BASE_URL + "/user/notexist@example.com").asString();
+    var getResponse = Unirest.get(baseUrl + "/user/notexist@example.com").asString();
     assertEquals(200, getResponse.getStatus());
     assertEquals("", getResponse.getBody());
   }
