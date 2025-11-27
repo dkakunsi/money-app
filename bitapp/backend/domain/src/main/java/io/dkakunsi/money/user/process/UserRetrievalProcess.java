@@ -17,11 +17,10 @@ public final class UserRetrievalProcess implements Process<UserRetrievalInput, U
 
   @Override
   public ProcessResult<User> process(ProcessInput<UserRetrievalInput> input) {
-    var email = input.data().email();
-
     try {
-      var result = userPort.findByEmail(email);
-      return result.isPresent() ? ProcessResult.success(result.get()) : ProcessResult.success();
+      return userPort.findByEmail(input.data().email())
+          .map(user -> ProcessResult.success(user))
+          .orElse(ProcessResult.success());
     } catch (Exception e) {
       return ProcessResult.failure(ProcessError.Code.SERVER_ERROR, e.getMessage());
     }

@@ -16,18 +16,11 @@ public final class UserRegistrationProcess implements Process<UserRegistrationIn
   }
 
   @Override
-  public ProcessResult<User> process(
-      ProcessInput<UserRegistrationInput> input) {
+  public ProcessResult<User> process(ProcessInput<UserRegistrationInput> input) {
     try {
-      var existingUser = userPort.findByEmail(input.data().email());
-      User user;
-      if (existingUser.isEmpty()) {
-        user = create(input.data());
-      } else if (existingUser.get().needUpdate(input.data())) {
-        user = update(existingUser.get(), input.data());
-      } else {
-        user = existingUser.get();
-      }
+      User user = userPort.findByEmail(input.data().email())
+          .map(existing -> update(existing, input.data()))
+          .orElseGet(() -> create(input.data()));
       return ProcessResult.success(user);
     } catch (IllegalArgumentException e) {
       return ProcessResult.failure(ProcessError.Code.BAD_REQUEST, e.getMessage());
@@ -37,12 +30,10 @@ public final class UserRegistrationProcess implements Process<UserRegistrationIn
   }
 
   private User update(User existingUser, UserRegistrationInput userInput) {
-    var updatedUser = existingUser.update(userInput);
-    return userPort.save(updatedUser);
+    return existingUser.needUpdate(userInput) ? userPort.save(existingUser.update(userInput)) : existingUser;
   }
 
   private User create(UserRegistrationInput userInput) {
-    var newUser = User.createNew(userInput);
-    return userPort.save(newUser);
+    return userPort.save(User.createNew(userInput));
   }
 }
