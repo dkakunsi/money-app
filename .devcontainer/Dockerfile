@@ -141,6 +141,10 @@ RUN flutter --disable-analytics
 
 RUN flutter doctor
 
+COPY id_rsa /home/vscode/.ssh/id_rsa
+RUN chmod 600 /home/vscode/.ssh/id_rsa
+RUN chown vscode:vscode /home/vscode/.ssh/id_rsa
+
 # Default shell to bash
 SHELL ["/bin/bash", "-c"]
 
