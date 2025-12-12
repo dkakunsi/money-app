@@ -46,6 +46,10 @@ RUN groupadd --gid $USER_GID $USERNAME 2>/dev/null || groupmod -n $USERNAME $(ge
     echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME
 
+# Copy private key for cloning from git repositories
+COPY id_rsa /home/vscode/.ssh/id_rsa
+RUN chmod 600 /home/vscode/.ssh/id_rsa
+RUN chown vscode:vscode /home/vscode/.ssh/id_rsa
 
 ## JAVA AND MAVEN SETUP
 # Install JDK 21 Temurin
@@ -119,8 +123,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN git config --global --add safe.directory /usr/lib/flutter
 
 # Configure git user name and email
-RUN git config --global user.name "Your Name" \
-    && git config --global user.email "mail@example.com"
+RUN git config --global user.name "Deddy Kakunsi" \
+    && git config --global user.email "deddy.kakunsi@gmail.com"
+
+# Set git config for the vscode user as well
+RUN mkdir -p /home/vscode/.gitconfig.d && \
+    git config --file /home/vscode/.gitconfig user.name "Deddy Kakunsi" && \
+    git config --file /home/vscode/.gitconfig user.email "deddy.kakunsi@gmail.com" && \
+    chown -R vscode:vscode /home/vscode/.gitconfig /home/vscode/.gitconfig.d
 
 # Download and install Android Command Line Tools
 RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
@@ -140,10 +150,6 @@ RUN git clone https://github.com/flutter/flutter.git -b stable ${FLUTTER_SDK_ROO
 RUN flutter --disable-analytics
 
 RUN flutter doctor
-
-COPY id_rsa /home/vscode/.ssh/id_rsa
-RUN chmod 600 /home/vscode/.ssh/id_rsa
-RUN chown vscode:vscode /home/vscode/.ssh/id_rsa
 
 # Default shell to bash
 SHELL ["/bin/bash", "-c"]
