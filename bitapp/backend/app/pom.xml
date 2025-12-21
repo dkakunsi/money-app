@@ -229,8 +229,8 @@
 
   <repositories>
     <repository>
-      <id>lab</id>
-      <url>https://maven.pkg.github.com/dkakunsi/lab</url>
+      <id>github</id>
+      <url>${github.package.url}</url>
       <releases>
         <enabled>true</enabled>
       </releases>

@@ -406,7 +406,7 @@
 
   <repositories>
     <repository>
-      <id>lab</id>
+      <id>github</id>
       <url>${github.package.url}</url>
       <releases>
         <enabled>true</enabled>
@@ -419,14 +419,14 @@
 
   <distributionManagement>
     <repository>
-      <id>lab</id>
+      <id>github</id>
       <url>${github.package.url}</url>
       <releases>
         <enabled>true</enabled>
       </releases>
     </repository>
     <snapshotRepository>
-      <id>lab</id>
+      <id>github</id>
       <url>${github.package.url}</url>
       <snapshots>
         <enabled>true</enabled>

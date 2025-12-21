@@ -46,11 +46,6 @@ RUN groupadd --gid $USER_GID $USERNAME 2>/dev/null || groupmod -n $USERNAME $(ge
     echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Copy private key for cloning from git repositories
-COPY id_rsa /home/vscode/.ssh/id_rsa
-RUN chmod 600 /home/vscode/.ssh/id_rsa
-RUN chown vscode:vscode /home/vscode/.ssh/id_rsa
-
 ## JAVA AND MAVEN SETUP
 # Install JDK 21 Temurin
 RUN apt-get update && \
@@ -150,6 +145,15 @@ RUN git clone https://github.com/flutter/flutter.git -b stable ${FLUTTER_SDK_ROO
 RUN flutter --disable-analytics
 
 RUN flutter doctor
+
+# Copy private key for cloning from git repositories
+COPY id_rsa /home/vscode/.ssh/id_rsa
+RUN chmod 600 /home/vscode/.ssh/id_rsa
+RUN chown vscode:vscode /home/vscode/.ssh/id_rsa
+
+COPY settings.xml /home/vscode/.m2/settings.xml
+RUN chmod 777 /home/vscode/.m2/settings.xml
+RUN chown vscode:vscode /home/vscode/.m2
 
 # Default shell to bash
 SHELL ["/bin/bash", "-c"]
