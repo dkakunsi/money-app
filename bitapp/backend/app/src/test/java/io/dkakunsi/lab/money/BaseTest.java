@@ -1,7 +1,8 @@
 package io.dkakunsi.lab.money;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import org.testcontainers.containers.PostgreSQLContainer;
 
 public abstract class BaseTest {
   static final String POSTGRES_HOST = "postgres.host";
@@ -12,64 +13,43 @@ public abstract class BaseTest {
   static final String SCHEMA = "schema";
   static final String APP_PORT = "app.port";
 
-  static Servers getServers() {
-    return new Servers();
+  protected static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
+      "postgres:16-alpine");
+
+  protected void startDb() throws Exception {
+    if (!postgres.isRunning()) {
+      postgres.start();
+    }
   }
 
-  static class Servers {
-
-    private EmbedPostgresInstance postgres;
-
-    private Launcher launcher;
-
-    private final Map<String, String> env;
-
-    public Servers() {
-      env = new HashMap<>(Map.of(
-          POSTGRES_HOST, "localhost",
-          POSTGRES_PORT, "5432",
-          POSTGRES_DBNAME, "postgres",
-          POSTGRES_USERNAME, "postgres",
-          POSTGRES_PASSWORD, "postgres",
-          SCHEMA, "src/test/resources/schema",
-          APP_PORT, "20000"));
-    }
-
-    void setEnv(String key, String value) {
-      env.put(key, value);
-    }
-
-    void startDb(int port) throws Exception {
-      postgres = new EmbedPostgresInstance();
-      postgres.start(port);
-    }
-
-    void stopDb() throws Exception {
+  protected void stopDb() throws Exception {
+    if (postgres.isRunning()) {
       postgres.stop();
     }
+  }
 
-    void startServer() throws Exception {
-      launcher = new Launcher();
-      launcher.launch(env::get);
+  private Launcher launcher;
+
+  protected void startServer(int port) throws Exception {
+    while (!postgres.isRunning()) {
+      System.out.println("Waiting for Postgres to start...");
+      Thread.sleep(1000);
     }
 
-    void stopServer() {
-      launcher.stop();
-    }
+    var env = Map.of(
+        POSTGRES_HOST, postgres.getHost(),
+        POSTGRES_PORT, postgres.getFirstMappedPort().toString(),
+        POSTGRES_DBNAME, postgres.getDatabaseName(),
+        POSTGRES_USERNAME, postgres.getUsername(),
+        POSTGRES_PASSWORD, postgres.getPassword(),
+        SCHEMA, "src/test/resources/schema",
+        APP_PORT, Integer.toString(port));
 
-    void start() throws Exception {
-      startDb(Integer.parseInt(env.get(POSTGRES_PORT)));
-      startServer();
-    }
+    launcher = new Launcher();
+    launcher.launch(env::get);
+  }
 
-    void stop() throws Exception {
-      stopServer();
-      stopDb();
-    }
-
-    String getBaseUrl() {
-      return "http://localhost:" + env.get(APP_PORT);
-    }
-
+  protected void stopServer() {
+    launcher.stop();
   }
 }

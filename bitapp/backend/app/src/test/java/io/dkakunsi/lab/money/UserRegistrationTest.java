@@ -10,23 +10,24 @@ import org.junit.jupiter.api.Test;
 import kong.unirest.Unirest;
 
 public class UserRegistrationTest extends BaseTest {
-  private static Servers servers;
+
+  private static final int port = 20000;
+
+  private static UserRegistrationTest sut = new UserRegistrationTest();
 
   private static String baseUrl;
 
   @BeforeAll
   static void setup() throws Exception {
-    servers = getServers();
-    servers.setEnv(POSTGRES_PORT, "5000");
-    servers.setEnv(APP_PORT, "6000");
-    servers.start();
-
-    baseUrl = servers.getBaseUrl();
+    sut.startDb();
+    sut.startServer(port);
+    baseUrl = "http://localhost:" + port;
   }
 
   @AfterAll
   static void tearDown() throws Exception {
-    servers.stop();
+    sut.stopServer();
+    sut.stopDb();
   }
 
   @Test
