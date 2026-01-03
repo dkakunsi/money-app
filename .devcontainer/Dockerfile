@@ -4,24 +4,12 @@ FROM --platform=linux/amd64 ubuntu:24.04
 # Explicitly prevent adding other architectures
 RUN rm -f /etc/dpkg/dpkg.cfg.d/multiarch
 
-# Install locales first
-RUN apt-get update && \
-    apt-get install -y locales && \
-    locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
-
 # Install basic dependencies
-RUN apt-get update && apt-get upgrade -y && \
+RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y \
+    locales \
     watchman \
-    openjdk-17-jdk \
-    android-sdk \
     wget \
     unzip \
     sudo \
@@ -33,9 +21,17 @@ RUN apt-get update && apt-get upgrade -y && \
     libc6 \
     libstdc++6 \
     libbz2-1.0 \
-    build-essential && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    gnupg \
+    ca-certificates \
+    build-essential
+
+# Set locales
+RUN locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 # Create a non-root user
 ARG USERNAME=vscode
@@ -48,14 +44,11 @@ RUN groupadd --gid $USER_GID $USERNAME 2>/dev/null || groupmod -n $USERNAME $(ge
 
 ## JAVA AND MAVEN SETUP
 # Install JDK 21 Temurin
-RUN apt-get update && \
-    apt-get install -y wget apt-transport-https && \
+RUN apt-get install -y apt-transport-https && \
     wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - && \
     echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list && \
     apt-get update && \
-    apt-get install -y temurin-21-jdk && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y temurin-21-jdk
 
 # Set JAVA_HOME dynamically based on architecture
 RUN JAVA_DIR=$(ls -d /usr/lib/jvm/temurin-21-jdk-* | head -n 1) && \
@@ -77,15 +70,11 @@ ENV PATH="${MAVEN_HOME}/bin:${PATH}"
 
 ## NODE.JS SETUP
 # Install Node.js 22
-RUN apt-get update && \
-    apt-get install -y ca-certificates curl gnupg && \
-    mkdir -p /etc/apt/keyrings && \
+RUN mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && \
-    apt-get install -y nodejs && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y nodejs
 
 # Install TypeScript and Vite globally
 RUN npm install -g typescript vite
@@ -95,7 +84,10 @@ RUN npm install -g typescript vite
 ## FLUTTER SETUP
 # Install Gradle
 ARG GRADLE_VERSION=8.11.1
-RUN wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -O /tmp/gradle.zip && \
+
+RUN apt-get install -y \
+    android-sdk && \
+    wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -O /tmp/gradle.zip && \
     unzip /tmp/gradle.zip -d /opt && \
     ln -s /opt/gradle-${GRADLE_VERSION} /opt/gradle && \
     rm /tmp/gradle.zip
@@ -146,14 +138,21 @@ RUN flutter --disable-analytics
 
 RUN flutter doctor
 
-# Copy private key for cloning from git repositories
-COPY id_rsa /home/vscode/.ssh/id_rsa
-RUN chmod 600 /home/vscode/.ssh/id_rsa
-RUN chown vscode:vscode /home/vscode/.ssh/id_rsa
+# Install Docker inside docker
+RUN apt-get install -y \
+    lsb-release && \
+    install -m 0755 -d /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    chmod a+r /etc/apt/keyrings/docker.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
+    usermod -aG docker ${USERNAME}
 
-COPY settings.xml /home/vscode/.m2/settings.xml
-RUN chmod 777 /home/vscode/.m2/settings.xml
-RUN chown vscode:vscode /home/vscode/.m2
+# Clean everything
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Default shell to bash
 SHELL ["/bin/bash", "-c"]

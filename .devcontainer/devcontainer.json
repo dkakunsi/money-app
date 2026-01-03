@@ -43,10 +43,12 @@
         "java.jdt.ls.java.home": "/usr/lib/jvm/temurin-21-jdk-amd64"
       }
     }
-  }
+  },
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "uname -a",
+  // Start Docker daemon and wait for it to be ready
+  "postStartCommand": "bash /workspaces/lab/.devcontainer/start-docker.sh"
   // Configure tool-specific properties.
 }
