@@ -43,11 +43,6 @@
     <lombok.version>1.18.42</lombok.version>
     <jakarta.validation.version>3.0.2</jakarta.validation.version>
     <commons.lang3.version>3.18.0</commons.lang3.version>
-    <junit.version>5.13.4</junit.version>
-    <mockito.version>5.18.0</mockito.version>
-    <mockito-junit.version>5.18.0</mockito-junit.version>
-    <hamcrest.version>3.0</hamcrest.version>
-    <awaitility.version>4.3.0</awaitility.version>
 
     <!-- Github package for maven repository -->
     <github.package.url>https://maven.pkg.github.com/dkakunsi/lab</github.package.url>
@@ -96,38 +91,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons.lang3.version}</version>
-      </dependency>
-
-      <!-- Test Dependencies -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-junit-jupiter</artifactId>
-        <version>${mockito-junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest</artifactId>
-        <version>${hamcrest.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.awaitility</groupId>
-        <artifactId>awaitility</artifactId>
-        <version>${awaitility.version}</version>
-        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -440,5 +403,6 @@
     <module>javalin</module>
     <module>app</module>
     <module>json</module>
+    <module>test</module>
   </modules>
 </project>
