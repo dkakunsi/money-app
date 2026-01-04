@@ -49,7 +49,7 @@
     <dependency>
       <groupId>io.dkakunsi.lab</groupId>
       <artifactId>test</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

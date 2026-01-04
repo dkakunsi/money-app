@@ -25,6 +25,7 @@ import io.dkakunsi.lab.common.data.Query.Criteria;
 import io.dkakunsi.lab.common.data.Query.Criteria.Operator;
 import io.dkakunsi.lab.common.data.Schema;
 import io.dkakunsi.lab.common.data.Schema.Index;
+import io.dkakunsi.lab.test.TestObject;
 
 class PostgresDatabaseTest {
 

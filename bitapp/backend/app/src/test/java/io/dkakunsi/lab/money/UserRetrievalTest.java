@@ -19,7 +19,7 @@ public class UserRetrievalTest extends BaseTest {
 
   @BeforeAll
   static void setup() throws Exception {
-    sut.startDb();
+    sut.create();
     sut.startServer(port);
 
     baseUrl = "http://localhost:" + port;
@@ -27,8 +27,7 @@ public class UserRetrievalTest extends BaseTest {
 
   @AfterAll
   static void tearDown() throws Exception {
-    sut.stopServer();
-    sut.stopDb();
+    sut.destroy();
   }
 
   @Test

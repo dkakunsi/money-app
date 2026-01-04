@@ -21,8 +21,7 @@ import io.dkakunsi.lab.common.process.ProcessResult;
 import io.dkakunsi.lab.common.security.AuthorizedPrincipal;
 import io.dkakunsi.lab.common.security.Authorizer;
 import io.dkakunsi.lab.common.web.Endpoint.Method;
-import io.dkakunsi.lab.javalin.object.TestObject;
-import io.dkakunsi.lab.javalin.object.TestObjectInput;
+import io.dkakunsi.lab.test.TestObject;
 import kong.unirest.Unirest;
 
 class JavalinWebTest {

@@ -19,15 +19,14 @@ public class UserRegistrationTest extends BaseTest {
 
   @BeforeAll
   static void setup() throws Exception {
-    sut.startDb();
+    sut.create();
     sut.startServer(port);
     baseUrl = "http://localhost:" + port;
   }
 
   @AfterAll
   static void tearDown() throws Exception {
-    sut.stopServer();
-    sut.stopDb();
+    sut.destroy();
   }
 
   @Test

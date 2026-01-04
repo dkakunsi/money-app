@@ -1,4 +1,4 @@
-package io.dkakunsi.lab.javalin.object;
+package io.dkakunsi.lab.javalin;
 
 import lombok.Builder;
 
