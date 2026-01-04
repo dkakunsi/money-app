@@ -159,10 +159,6 @@ COPY id_rsa /home/vscode/.ssh/id_rsa
 RUN chmod 600 /home/vscode/.ssh/id_rsa
 RUN chown vscode:vscode /home/vscode/.ssh/id_rsa
 
-COPY settings.xml /home/vscode/.m2/settings.xml
-RUN chmod 777 /home/vscode/.m2/settings.xml
-RUN chown vscode:vscode /home/vscode/.m2
-
 # Default shell to bash
 SHELL ["/bin/bash", "-c"]
 

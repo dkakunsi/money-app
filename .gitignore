@@ -40,3 +40,5 @@ hs_err_pid*
 **/.cxx/**/*.*
 .devcontainer/id_rsa
 .devcontainer/settings.xml
+.devcontainer/.m2/**
+.m2/**
