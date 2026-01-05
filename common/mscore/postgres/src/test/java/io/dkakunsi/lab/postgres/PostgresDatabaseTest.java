@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,38 +19,36 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import io.dkakunsi.lab.common.EnvironmentConfiguration;
 import io.dkakunsi.lab.common.Id;
 import io.dkakunsi.lab.common.data.Query.Criteria;
 import io.dkakunsi.lab.common.data.Query.Criteria.Operator;
 import io.dkakunsi.lab.common.data.Schema;
 import io.dkakunsi.lab.common.data.Schema.Index;
+import io.dkakunsi.lab.test.Postgres;
 import io.dkakunsi.lab.test.TestObject;
 
 class PostgresDatabaseTest {
 
-  private static EmbedPostgresInstance postgres;
-
   private PostgresDatabase<TestObject> database;
 
-  private PostgresConfig config;
+  private static PostgresConfig config;
 
   @BeforeAll
   static void setupServer() throws Exception {
-    postgres = new EmbedPostgresInstance();
-    postgres.start();
+    Postgres.startDb();
+    var dbConfig = Postgres.getDbConfig();
+    var configuration = EnvironmentConfiguration.of(dbConfig::get);
+    config = new PostgresConfig(configuration);
   }
 
   @AfterAll
   static void stopServer() throws Exception {
-    postgres.stop();
+    Postgres.stopDb();
   }
 
   @BeforeEach
   void setup() {
-    config = mock(PostgresConfig.class);
-    when(config.getDatabaseSchema()).thenReturn("public");
-    when(config.getDataSource()).thenReturn(postgres.getDataSource());
-
     var schema = mock(Schema.class);
     doReturn("domain").when(schema).getName();
     doReturn(List.of(new Index("id", true), new Index("code", true))).when(schema).getIndexes();
