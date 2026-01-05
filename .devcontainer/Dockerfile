@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 ubuntu:24.04
+FROM ubuntu:24.04
 
 ## BASIC SETUP
 # Explicitly prevent adding other architectures
@@ -51,11 +51,12 @@ RUN apt-get install -y apt-transport-https && \
     apt-get install -y temurin-21-jdk
 
 # Set JAVA_HOME dynamically based on architecture
-RUN JAVA_DIR=$(ls -d /usr/lib/jvm/temurin-21-jdk-* | head -n 1) && \
+RUN JAVA_DIR=$(ls -d /usr/lib/jvm/temurin-21-jdk-* 2>/dev/null | head -n 1) && \
     echo "export JAVA_HOME=${JAVA_DIR}" >> /etc/environment && \
-    echo "export PATH=\${JAVA_HOME}/bin:\${PATH}" >> /etc/environment
+    echo "export PATH=\${JAVA_HOME}/bin:\${PATH}" >> /etc/environment && \
+    ln -s ${JAVA_DIR} /usr/lib/jvm/temurin-21-jdk
 
-ENV JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/temurin-21-jdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Install Maven

@@ -3,13 +3,9 @@
 {
   "name": "Ubuntu",
   "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      "TARGETARCH": "amd64"
-    }
+    "dockerfile": "Dockerfile"
   },
   "runArgs": [
-    "--platform=linux/amd64",
     "--privileged",
     "-v",
     "/dev/bus/usb:/dev/bus/usb"
@@ -40,7 +36,7 @@
         "ms-vscode-remote.remote-containers"
       ],
       "settings": {
-        "java.jdt.ls.java.home": "/usr/lib/jvm/temurin-21-jdk-amd64"
+        "java.jdt.ls.java.home": "/usr/lib/jvm/temurin-21-jdk"
       }
     }
   },
